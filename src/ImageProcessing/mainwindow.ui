@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>735</width>
-    <height>507</height>
+    <height>514</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -161,7 +161,7 @@
      <rect>
       <x>20</x>
       <y>300</y>
-      <width>541</width>
+      <width>561</width>
       <height>61</height>
      </rect>
     </property>
@@ -182,12 +182,52 @@
      </property>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="gBox_showHistogram">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>390</y>
+      <width>561</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Show Histogram</string>
+    </property>
+    <widget class="QWidget" name="layoutWidget_4">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>20</y>
+       <width>371</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_showHis">
+      <item>
+       <widget class="QPushButton" name="btn_showHis_gray">
+        <property name="text">
+         <string>Apply (Gray Image)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_showHis_Color">
+        <property name="text">
+         <string>Apply (Color Image)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
    <zorder>layoutWidget</zorder>
    <zorder>btn_browse</zorder>
    <zorder>layoutWidget</zorder>
    <zorder>gBox_hisSlide</zorder>
    <zorder>gBox_hisStretch</zorder>
    <zorder>gBox_segmentation</zorder>
+   <zorder>gBox_showHistogram</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
