@@ -190,7 +190,7 @@ void MainWindow::on_btn_hisStretch_Color_clicked(){
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_his_stretch");
 }
 
-/* Segmentation thresholding */
+/* Segmentation method */
 void MainWindow::on_btn_segmentation_gray_clicked(){
     QString fileName = ui->ln_fileName->text(); // get file name from line edit bar ln_fileName (QLineEdit)
     qDebug() << "File name: " << fileName; // test
