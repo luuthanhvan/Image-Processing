@@ -28,14 +28,15 @@ void MainWindow::displayImage(QImage &img, QString title){
 
 void MainWindow::on_btn_browse_clicked(){
     // open file and assign file name to fileName variable
-    QString fileName = QFileDialog::getOpenFileName(this, "Open File", "../images",
+    QString fileName = QFileDialog::getOpenFileName(this, "Open File", "../../images",
                                                     "*.* All Files;;.bmp;;.jpeg;;.ppm;;.png;;.jpg");
     // if file name has no character
     if(fileName.isEmpty()){
-        qDebug() << "File name has no character" << endl;
+        qDebug() << "No file choosen!" << endl;
         return; // exit
     }
-    // assign file name to ln_fileName (QLineEdit)
+
+    // assign file name to line edit bar ln_fileName (QLineEdit)
     ui->ln_fileName->setText(fileName);
 
     //QPixmap pixmap(fileName); // read image
@@ -47,20 +48,21 @@ void MainWindow::on_btn_browse_clicked(){
 
 /* Histogram slide method => increasing or decreasing BRIGHTNESS of a gray image */
 void MainWindow::on_btn_hisSlide_gray_clicked(){
-    QString fileName = ui->ln_fileName->text(); // get file name from ln_fileName (QLineEdit)
+    QString fileName = ui->ln_fileName->text(); // get file name from line edit bar ln_fileName (QLineEdit)
     qDebug() << "File name: " << fileName; // test
+
+    int c = ui->ln_c->text().toInt(); // get the amount from line edit bar ln_c (QLineEdit) and convert it from string to number
+    qDebug() << "Constant: " << c; // test
 
     QImage imageIn(fileName); // read image from file name
     QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
-
-    int c = ui->ln_c->text().toInt(); // convert string to number
 
     // travesing all pixels of imageIn
     for(int x = 0; x < imageIn.width(); x++){
         for(int y = 0; y < imageIn.height(); y++){
             QRgb colorIn = imageIn.pixel(x, y); // get pixel value at (x,y)
             int grayIn = qGray(colorIn); // convert color value at (x,y) to gray value
-            int grayOut = grayIn + c; // change gray value aming to increasing or decreasing brightness
+            int grayOut = grayIn + c; // change gray value aming to increasing or decreasing the brightness of the imageIn
 
             // check threshold
             if(grayOut > 255)
@@ -69,24 +71,25 @@ void MainWindow::on_btn_hisSlide_gray_clicked(){
                 if(grayOut < 0)
                    grayOut = 0;
 
-            QRgb colorOut = qRgb(grayOut, grayOut, grayOut); // color out for image out
-            imageOut.setPixel(x, y, colorOut);
+            QColor colorOut = qRgb(grayOut, grayOut, grayOut);
+            imageOut.setPixel(x, y, colorOut.rgb()); // set pixel (x,y) with color (colorOut) for imageOut
         }
     }
-    // display image input and image output
+    // display imageIn and imageOut
     displayImage(imageIn, QFileInfo(fileName).fileName());
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_his_slide");
 }
 
 /* Histogram slide method => increasing or decreasing BRIGHTNESS of a color image */
 void MainWindow::on_btn_hisSlide_Color_clicked(){
-    QString fileName = ui->ln_fileName->text(); // get file name from ln_fileName (QLineEdit)
+    QString fileName = ui->ln_fileName->text(); // get file name from line edit bar ln_fileName (QLineEdit)
     qDebug() << "File name: " << fileName; // test
+
+    int c = ui->ln_c->text().toInt(); // get the amount from line edit bar ln_c (QLineEdit) and convert it from string to number
+    qDebug() << "Constant: " << c; // test
 
     QImage imageIn(fileName); // read image from file name
     QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
-
-    int c = ui->ln_c->text().toInt(); // convert string to number
 
     // travesing all pixels of imageIn
     for(int x = 0; x < imageIn.width(); x++){
@@ -94,7 +97,8 @@ void MainWindow::on_btn_hisSlide_Color_clicked(){
             QRgb rgb = imageIn.pixel(x, y); // get pixel value at (x,y)
             QColor colorIn(rgb);
             int h, s, v;
-            colorIn.getHsv(&h, &s, &v); // get h, s, v component from colorIn
+
+            colorIn.getHsv(&h, &s, &v); // get h, s, v from colorIn
             int vOut = v + c;
 
             // check threshold
@@ -104,11 +108,11 @@ void MainWindow::on_btn_hisSlide_Color_clicked(){
                 if(vOut < 0)
                    vOut = 0;
 
-            QColor colorOut = QColor::fromHsv(h, s, vOut); // color out for image out
-            imageOut.setPixel(x, y, colorOut.rgb());
+            QColor colorOut = QColor::fromHsv(h, s, vOut);
+            imageOut.setPixel(x, y, colorOut.rgb()); // set pixel (x,y) with color (colorOut) for imageOut
         }
     }
-    // display image input and image output
+    // display imageIn and imageOut
     displayImage(imageIn, QFileInfo(fileName).fileName());
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_his_slide");
 }
@@ -118,17 +122,19 @@ void MainWindow::on_btn_hisStretch_gray_clicked(){
     QString fileName = ui->ln_fileName->text(); // get file name from ln_fileName (QLineEdit)
     qDebug() << "File name: " << fileName; // test
 
+    float c = ui->ln_c->text().toFloat(); // get the amount from line edit bar ln_c (QLineEdit) and convert it from string to float number
+    qDebug() << "Constant: " << c; // test
+
     QImage imageIn(fileName); // read image from file name
     QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
-
-    int c = ui->lb_c->text().toFloat(); // convert string to float number
 
     // travesing all pixels of imageIn
     for(int x = 0; x < imageIn.width(); x++){
         for(int y = 0; y < imageIn.height(); y++){
             QRgb colorIn = imageIn.pixel(x, y); // get pixel value at (x,y)
             int grayIn = qGray(colorIn); // convert color value at (x,y) to gray value
-            int grayOut = grayIn * c; // change gray value to increasing or decreasing the contrast of the image
+//            qDebug() << grayIn;
+            int grayOut = (int)(grayIn * c); // change gray value to increasing or decreasing the contrast of imageIn
 
             // check threshold
             if(grayOut > 255)
@@ -136,50 +142,37 @@ void MainWindow::on_btn_hisStretch_gray_clicked(){
             else
                 if(grayOut < 0)
                     grayOut = 0;
-            QRgb colorOut = qRgb(grayOut, grayOut, grayOut); // color out for image out
-            imageOut.setPixel(x, y, colorOut);
+
+            QColor colorOut = qRgb(grayOut, grayOut, grayOut);
+            imageOut.setPixel(x, y, colorOut.rgb()); // set pixel (x,y) with color (colorOut) for imageOut
         }
     }
-    // save image out
-    /*QString selectedFilter;
-    QString name = QFileDialog::getSaveFileName(this, "Save image", QDir::currentPath(),
-                                                "BMP (*.bmp);;PNG (*.png);;JPEG (*.jpg);;All files (*.*)",
-                                                &selectedFilter);
-
-    if(selectedFilter == "BMP (*.bmp)")
-        imageOut.save(name, "BMP");
-    else
-        if(selectedFilter == "PNG (*.png)")
-            imageOut.save(name, "PNG");
-        else
-            if(selectedFilter == "JPEG (*.jpg)")
-                imageOut.save(name, "JPEG");
-            else
-                imageOut.save(name);
-    */
-    // display image input and image output
+    // display imageIn and imageOut
     displayImage(imageIn, QFileInfo(fileName).fileName());
-    displayImage(imageIn, QFileInfo(fileName).fileName()+"_his_stretch");
+    displayImage(imageOut, QFileInfo(fileName).fileName()+"_his_stretch");
 }
 
 /* Histogram stretch method => increasing or decreasing CONTRAST of a color image */
 void MainWindow::on_btn_hisStretch_Color_clicked(){
-    QString fileName = ui->ln_fileName->text(); // get file name from ln_fileName (QLineEdit)
+    QString fileName = ui->ln_fileName->text();// get file name from line edit bar ln_fileName (QLineEdit)
     qDebug() << "File name: " << fileName; // test
 
-    QImage imageIn(fileName);
-    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+    float c = ui->ln_c->text().toFloat(); // get the amount from line edit bar ln_c (QLineEdit) and convert it from string to float number
+    qDebug() << "Constant: " << c; // test
 
-    int c = ui->ln_c->text().toFloat(); // convert string to float number
+    QImage imageIn(fileName); // read image from file name
+    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
 
     // travesing all pixels of imageIn
     for(int x = 0; x < imageIn.width(); x++){
         for(int y = 0; y < imageIn.height(); y++){
-            QColor colorIn = imageIn.pixel(x, y);
-            int h, s, v;
-            colorIn.getHsv(&h, &s, &v);
+            QRgb rgb = imageIn.pixel(x, y); // get pixel value at (x,y)
+            QColor colorIn(rgb);
 
-            int vOut = v * c;
+            int h, s, v;
+            colorIn.getHsv(&h, &s, &v); // get h, s, v from colorIn
+
+            int vOut = (int)(v * c); // change value to increasing or decreasing the contrast of imageIn
 
             // check threshold
             if(vOut > 255)
@@ -188,23 +181,25 @@ void MainWindow::on_btn_hisStretch_Color_clicked(){
                 if(vOut < 0)
                     vOut = 0;
 
-            QColor colorOut = QColor::fromHsv(h, s, vOut); // color out for image out
-            imageOut.setPixel(x, y, colorOut.rgb());
+            QColor colorOut = QColor::fromHsv(h, s, vOut);
+            imageOut.setPixel(x, y, colorOut.rgb()); // set pixel (x,y) with color (colorOut) for imageOut
         }
     }
-    // display image input and image output
+    // display imageIn and imageOut
     displayImage(imageIn, QFileInfo(fileName).fileName());
-    displayImage(imageIn, QFileInfo(fileName).fileName()+"_his_stretch");
+    displayImage(imageOut, QFileInfo(fileName).fileName()+"_his_stretch");
 }
 
+/* Segmentation thresholding */
 void MainWindow::on_btn_segmentation_gray_clicked(){
-    QString fileName = ui->ln_fileName->text(); // get file name from ln_fileName (QLineEdit)
+    QString fileName = ui->ln_fileName->text(); // get file name from line edit bar ln_fileName (QLineEdit)
     qDebug() << "File name: " << fileName; // test
 
-    QImage imageIn(fileName);
-    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+    int thresholding = ui->ln_c->text().toInt(); // get the amount from line edit bar ln_c (QLineEdit) and convert it from string to number
+    qDebug() << "Constant: " << thresholding; // test
 
-    int c = ui->ln_c->text().toInt(); // convert string to number
+    QImage imageIn(fileName); // read image from file name
+    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
 
     // travesing all pixels of imageIn
     for(int x = 0; x < imageIn.width(); x++){
@@ -213,16 +208,16 @@ void MainWindow::on_btn_segmentation_gray_clicked(){
             int gray = qGray(colorIn); // convert color value at (x,y) to gray value
 
             // check threshold
-            if(gray > c)
+            if(gray >= thresholding)
                 gray = 255;
             else
                 gray = 0;
 
-            QRgb colorOut = qRgb(gray, gray, gray);
-            imageOut.setPixel(x, y, colorOut);
+            QColor colorOut = qRgb(gray, gray, gray);
+            imageOut.setPixel(x, y, colorOut.rgb()); // set pixel (x,y) with color (colorOut) for imageOut
         }
     }
-    // display image input and image output
+    // display imageIn and imageOut
     displayImage(imageIn, QFileInfo(fileName).fileName());
-    displayImage(imageIn, QFileInfo(fileName).fileName()+"_segmentation");
+    displayImage(imageOut, QFileInfo(fileName).fileName()+"_segmentation");
 }
