@@ -14,7 +14,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void displayImage(QImage &img, QString title);
-//    void saveImage(QImage &imgOut, QString fileName);
+    void saveImage(QImage &imgOut);
 
 private slots:
     void on_btn_browse_clicked();

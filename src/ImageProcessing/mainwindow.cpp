@@ -26,6 +26,23 @@ void MainWindow::displayImage(QImage &img, QString title){
     label->show();
 }
 
+void MainWindow::saveImage(QImage &imgOut){
+    QString selectedFilter;
+    QString fileName = QFileDialog::getSaveFileName(this, "Save image", QDir::currentPath(),
+                                                    "BMP (*.bmp);;PNG (*.png);;JPEG (*.jpg);;All files (*.*)",
+                                                    &selectedFilter);
+    if(selectedFilter == "BMP (*.bmp)")
+        imgOut.save(fileName, "BMP");
+    else
+        if(selectedFilter == "PNG (*.png)")
+            imgOut.save(fileName, "PNG");
+        else
+            if(selectedFilter == "JPEG (*.jpg)")
+                imgOut.save(fileName, "JPEG");
+            else
+                imgOut.save(fileName);
+}
+
 void MainWindow::on_btn_browse_clicked(){
     // open file and assign file name to fileName variable
     QString fileName = QFileDialog::getOpenFileName(this, "Open File", "../../images",
@@ -147,6 +164,10 @@ void MainWindow::on_btn_hisStretch_gray_clicked(){
             imageOut.setPixel(x, y, colorOut.rgb()); // set pixel (x,y) with color (colorOut) for imageOut
         }
     }
+
+    // save imageOut
+    saveImage(imageOut);
+
     // display imageIn and imageOut
     displayImage(imageIn, QFileInfo(fileName).fileName());
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_his_stretch");
