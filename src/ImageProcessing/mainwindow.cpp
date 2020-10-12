@@ -439,3 +439,60 @@ void MainWindow::on_btn_linearModification_gray_clicked(){
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_linear_modification");
     displayImage(histogramImgOut, QFileInfo(fileName).fileName()+"_linear_modification_histogram");
 }
+
+void MainWindow::on_btn_histogramEqual_gray_clicked(){
+    QString fileName = ui->ln_fileName->text();
+    QImage imageIn(fileName);
+    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+
+    int h[256];
+    float hn[256], C[256];
+    for(int i = 0; i < 256; i++){
+        h[i] = 0;
+        hn[i] = 0;
+        C[i] = 0;
+    }
+
+    // tinh to chuc do h[x]
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y);
+            int gray = qGray(rgb);
+            h[gray]++;
+        }
+    }
+
+    // chuan hoa to chuc do h[x] thanh hn[x]
+    for(int x = 0; x < 256; x++){
+        hn[x] = (float)h[x]/(float)(imageIn.width()*imageIn.height());
+    }
+
+    // tinh ham mat do xac xuat C[x]
+    C[0] = hn[0];
+    for(int x = 1; x < 256; x++){
+        C[x] = C[x-1] + hn[x];
+    }
+
+    // duyet qua cac diem anh 1 lan nua de tinh gia tri cho anh output: O(x,y)
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y);
+            int grayIn = qGray(rgb);
+            imageIn.setPixel(x, y, qRgb(grayIn, grayIn, grayIn));
+
+            int grayOut = C[grayIn]*255;
+
+            imageOut.setPixel(x, y, qRgb(grayOut, grayOut, grayOut));
+        }
+    }
+
+    // draw histogram of imageIn and display it
+    QImage histogramImgIn = drawHisGray(imageIn);
+    displayImage(imageIn, QFileInfo(fileName).fileName());
+    displayImage(histogramImgIn, QFileInfo(fileName).fileName()+"_histogram");
+
+    // draw histogram of imageOut and display it
+    QImage histogramImgOut = drawHisGray(imageOut);
+    displayImage(imageOut, QFileInfo(fileName).fileName()+"_histogram_equalization");
+    displayImage(histogramImgOut, QFileInfo(fileName).fileName()+"_histogram_equalization_histogram");
+}

@@ -40,6 +40,8 @@ private slots:
 
     void on_btn_linearModification_gray_clicked();
 
+    void on_btn_histogramEqual_gray_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
