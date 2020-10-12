@@ -18,7 +18,7 @@ public:
     int max(int num1, int num2);
     int min(int num1, int num2);
     QImage drawHisGray(QImage &img);
-    void drawHisColor(QImage &img);
+    QImage drawHisColor(QImage &img);
 
 
 private slots:
@@ -41,6 +41,10 @@ private slots:
     void on_btn_linearModification_gray_clicked();
 
     void on_btn_histogramEqual_gray_clicked();
+
+    void on_btn_linearModification_Color_clicked();
+
+    void on_btn_histogramEqual_Color_clicked();
 
 private:
     Ui::MainWindow *ui;

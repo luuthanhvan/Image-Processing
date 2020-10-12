@@ -10,6 +10,7 @@
 #include <QRgb>
 #include <QColor>
 #include <QDir>
+#include <typeinfo>
 #define HEIGHT 128
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
@@ -83,6 +84,57 @@ QImage MainWindow::drawHisGray(QImage &img){
 //            histogram.setPixel(x, y, qRgb(0, 0, 255)); // draw histogram
         for(int y = HEIGHT-lineHeight; y < HEIGHT; y++)
             histogram.setPixel(x, y, qRgb(0, 0, 255)); // draw histogram
+    }
+
+    return histogram;
+}
+
+QImage MainWindow::drawHisColor(QImage &img){
+    QImage histogram(256, HEIGHT*3, QImage::Format_ARGB32);
+    histogram.fill(Qt::white);
+
+    int h_red[256], h_green[256], h_blue[256];
+    for(int i = 0; i < 256; i++){
+        h_red[i] = 0;
+        h_green[i] = 0;
+        h_blue[i] = 0;
+    }
+
+    for(int x = 0; x < img.width(); x++){
+        for(int y = 0; y < img.height(); y++){
+            QColor color = img.pixel(x, y);
+            int red = color.red();
+            int green = color.green();
+            int blue = color.blue();
+            h_red[red]++;
+            h_green[green]++;
+            h_blue[blue]++;
+        }
+    }
+
+    int maxValue = 0;
+    for(int x = 0; x < 256; x++){
+        if(maxValue < h_red[x])
+            maxValue = h_red[x];
+        if(maxValue < h_green[x])
+            maxValue = h_green[x];
+        if(maxValue < h_blue[x])
+            maxValue = h_blue[x];
+    }
+
+    int lineHeight = 0;
+    for(int x = 0; x < 256; x++){
+        lineHeight = (HEIGHT*h_red[x])/maxValue;
+        for(int y = HEIGHT-1; y > HEIGHT-1-lineHeight; y--)
+            histogram.setPixel(x, y, qRgb(255, 0, 0));
+
+        lineHeight = (HEIGHT*h_green[x])/maxValue;
+        for(int y = 2*HEIGHT-1; y > 2*HEIGHT-1-lineHeight; y--)
+            histogram.setPixel(x, y, qRgb(0, 255, 0));
+
+        lineHeight = (HEIGHT*h_blue[x])/maxValue;
+        for(int y = 3*HEIGHT-1; y > 3*HEIGHT-1-lineHeight; y--)
+            histogram.setPixel(x, y, qRgb(0, 0, 255));
     }
 
     return histogram;
@@ -424,7 +476,6 @@ void MainWindow::on_btn_linearModification_gray_clicked(){
                 if(grayOut < 0)
                     grayOut = 0;
 
-            imageIn.setPixel(x, y, qRgb(grayIn, grayIn, grayIn));
             imageOut.setPixel(x, y, qRgb(grayOut, grayOut, grayOut));
         }
     }
@@ -436,6 +487,63 @@ void MainWindow::on_btn_linearModification_gray_clicked(){
 
     // draw histogram of imageOut and display it
     QImage histogramImgOut = drawHisGray(imageOut);
+    displayImage(imageOut, QFileInfo(fileName).fileName()+"_linear_modification");
+    displayImage(histogramImgOut, QFileInfo(fileName).fileName()+"_linear_modification_histogram");
+}
+
+void MainWindow::on_btn_linearModification_Color_clicked(){
+    QString fileName = ui->ln_fileName->text();
+    QImage imageIn(fileName);
+    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+
+    int minValue = 255, maxValue = 0;
+
+    // duyet qua tung diem anh va tim diem anh co gia tri lon nhat va nho nhat
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y);
+            QColor colorIn(rgb);
+            int h, s, v;
+
+            colorIn.getHsv(&h, &s, &v);
+
+            maxValue = max(maxValue, v);
+            minValue = min(minValue, v);
+        }
+    }
+    qDebug() << "max value:" << maxValue;
+    qDebug() << "min value:" << minValue;
+
+    // duyet qua tung diem anh 1 lan nua, thay doi gia tri cac diem anh bang cong thuc:
+    // O(x,y) = ((I(x,y) - min[I(x,y)]) * 255) / (max[I(x,y)] - min[I(x,y)])
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y);
+            QColor colorIn(rgb);
+            int h, s, v;
+            colorIn.getHsv(&h, &s, &v);
+
+            int vOut = ((v-minValue)*255)/(maxValue-minValue);
+
+            // check threshold
+            if(vOut > 255)
+                vOut = 255;
+            else
+                if(vOut < 0)
+                    vOut = 0;
+
+            QColor colorOut = QColor::fromHsv(h, s, vOut);
+            imageOut.setPixel(x, y, colorOut.rgb());
+        }
+    }
+
+    // draw histogram of imageIn and display it
+    QImage histogramImgIn = drawHisColor(imageIn);
+    displayImage(imageIn, QFileInfo(fileName).fileName());
+    displayImage(histogramImgIn, QFileInfo(fileName).fileName()+"_histogram");
+
+    // draw histogram of imageOut and display it
+    QImage histogramImgOut = drawHisColor(imageOut);
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_linear_modification");
     displayImage(histogramImgOut, QFileInfo(fileName).fileName()+"_linear_modification_histogram");
 }
@@ -493,6 +601,67 @@ void MainWindow::on_btn_histogramEqual_gray_clicked(){
 
     // draw histogram of imageOut and display it
     QImage histogramImgOut = drawHisGray(imageOut);
+    displayImage(imageOut, QFileInfo(fileName).fileName()+"_histogram_equalization");
+    displayImage(histogramImgOut, QFileInfo(fileName).fileName()+"_histogram_equalization_histogram");
+}
+
+void MainWindow::on_btn_histogramEqual_Color_clicked(){
+    QString fileName = ui->ln_fileName->text();
+    QImage imageIn(fileName);
+    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+
+    int h[256];
+    float hn[256], C[256];
+    for(int i = 0; i < 256; i++){
+        h[i] = 0;
+        hn[i] = 0;
+        C[i] = 0;
+    }
+
+    // tinh to chuc do h[x]
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y);
+            QColor colorIn(rgb);
+            int hue, s, v;
+            colorIn.getHsv(&hue, &s, &v);
+            h[v]++;
+        }
+    }
+
+    // chuan hoa to chuc do h[x] thanh hn[x]
+    for(int x = 0; x < 256; x++){
+        hn[x] = (float)h[x]/(float)(imageIn.width()*imageIn.height());
+    }
+
+    // tinh ham mat do xac xuat C[x]
+    C[0] = hn[0];
+    for(int x = 1; x < 256; x++){
+        C[x] = C[x-1] + hn[x];
+    }
+
+    // duyet qua cac diem anh 1 lan nua de tinh gia tri cho anh output: O(x,y)
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y);
+            QColor colorIn(rgb);
+            int h, s, v;
+            colorIn.getHsv(&h, &s, &v);
+
+            int vOut = C[v]*255;
+
+            QColor colorOut = QColor::fromHsv(h, s, vOut);
+            imageOut.setPixel(x, y, colorOut.rgb());
+        }
+    }
+
+    // draw histogram of imageIn and display it
+    QImage histogramImgIn = drawHisColor(imageIn);
+    displayImage(imageIn, QFileInfo(fileName).fileName());
+    displayImage(histogramImgIn, QFileInfo(fileName).fileName()+"_histogram");
+
+    // draw histogram of imageOut and display it
+    QImage histogramImgOut = drawHisColor(imageOut);
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_histogram_equalization");
     displayImage(histogramImgOut, QFileInfo(fileName).fileName()+"_histogram_equalization_histogram");
 }
