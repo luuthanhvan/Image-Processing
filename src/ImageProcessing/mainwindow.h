@@ -15,6 +15,8 @@ public:
     ~MainWindow();
     void displayImage(QImage &img, QString title);
     void saveImage(QImage &imgOut);
+    int max(int num1, int num2);
+    int min(int num1, int num2);
 
 private slots:
     void on_btn_browse_clicked();
@@ -28,6 +30,10 @@ private slots:
     void on_btn_hisStretch_Color_clicked();
 
     void on_btn_segmentation_gray_clicked();
+
+    void on_btn_showHis_gray_clicked();
+
+    void on_btn_showHis_Color_clicked();
 
 private:
     Ui::MainWindow *ui;

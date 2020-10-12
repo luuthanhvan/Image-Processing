@@ -10,6 +10,7 @@
 #include <QRgb>
 #include <QColor>
 #include <QDir>
+#define HEIGHT 128
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
@@ -41,6 +42,14 @@ void MainWindow::saveImage(QImage &imgOut){
                 imgOut.save(fileName, "JPEG");
             else
                 imgOut.save(fileName);
+}
+
+int MainWindow::max(int num1, int num2){
+    return num1 > num2 ? num1 : num2;
+}
+
+int MainWindow::min(int num1, int num2){
+    return num1 < num2 ? num1 : num2;
 }
 
 void MainWindow::on_btn_browse_clicked(){
@@ -241,4 +250,106 @@ void MainWindow::on_btn_segmentation_gray_clicked(){
     // display imageIn and imageOut
     displayImage(imageIn, QFileInfo(fileName).fileName());
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_segmentation");
+}
+
+void MainWindow::on_btn_showHis_gray_clicked(){
+    QString fileName = ui->ln_fileName->text(); // get file name from line edit bar ln_fileName (QLineEdit)
+    qDebug() << "File name: " << fileName; // test
+
+    QImage imageIn(fileName); // read image from file name
+//    const int HEIGHT = 128; // height of histogram
+
+    QImage histogram(256, HEIGHT, QImage::Format_ARGB32);
+    histogram.fill(Qt::white); // init histogram white
+    int h[256]; // mang luu tru so diem anh, diem anh tuong ung co gia tri tu 0..255
+    // vi du gia tri diem anh 100 xuat hien 10 lan thi h[100] = 10
+
+    for(int i = 0; i < 256; i++)
+        h[i] = 0;
+
+    // dem so luong diem anh
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y); // lay gia tri diem anh tai vi tri (x, y)
+            int gray = qGray(rgb); // chuyen gia tri diem anh tai vi tri (x, y) ve gia tri muc xam
+            h[gray]++; // tang so luong diem anh len 1
+        }
+    }
+
+    // find max value in h[]
+    int maxValue = 0;
+    for(int i = 0; i < 256; i++){
+        maxValue = max(maxValue, h[i]);
+    }
+
+    int lineHeight = 0;
+    for(int x = 0; x < 256; x++){
+        lineHeight = (HEIGHT*h[x])/maxValue; // calculating ratio
+//        for(int y = HEIGHT-1; y > HEIGHT-1-lineHeight; y--)
+//            histogram.setPixel(x, y, qRgb(0, 0, 255)); // draw histogram
+        for(int y = HEIGHT-lineHeight; y < HEIGHT; y++)
+            histogram.setPixel(x, y, qRgb(0, 0, 255)); // draw histogram
+    }
+
+    // display imageIn and histogram
+    displayImage(imageIn, QFileInfo(fileName).fileName());
+    displayImage(histogram, QFileInfo(fileName).fileName()+"_histogram");
+}
+
+void MainWindow::on_btn_showHis_Color_clicked(){
+    QString fileName = ui->ln_fileName->text(); // get file name from line edit bar ln_fileName (QLineEdit)
+    QImage imageIn(fileName);
+
+//    const int HEIGHT = 125;
+
+    QImage histogram(256, HEIGHT*3, QImage::Format_ARGB32);
+    histogram.fill(Qt::black);
+
+    int h_red[256], h_green[256], h_blue[256];
+    for(int i = 0; i < 256; i++){
+        h_red[i] = 0;
+        h_green[i] = 0;
+        h_blue[i] = 0;
+    }
+
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QColor color = imageIn.pixel(x, y);
+            int red = color.red();
+            int green = color.green();
+            int blue = color.blue();
+            h_red[red]++;
+            h_green[green]++;
+            h_blue[blue]++;
+        }
+    }
+
+    int maxValue = 0;
+    for(int x = 0; x < 256; x++){
+        if(maxValue < h_red[x])
+            maxValue = h_red[x];
+        if(maxValue < h_green[x])
+            maxValue = h_green[x];
+        if(maxValue < h_blue[x])
+            maxValue = h_blue[x];
+    }
+
+    int lineHeight = 0;
+    for(int x = 0; x < 256; x++){
+        lineHeight = (HEIGHT*h_red[x])/maxValue;
+        for(int y = HEIGHT-1; y > HEIGHT-1-lineHeight; y--)
+            histogram.setPixel(x, y, qRgb(255, 0, 0));
+
+        lineHeight = (HEIGHT*h_green[x])/maxValue;
+        for(int y = 2*HEIGHT-1; y > 2*HEIGHT-1-lineHeight; y--)
+            histogram.setPixel(x, y, qRgb(0, 255, 0));
+
+        lineHeight = (HEIGHT*h_blue[x])/maxValue;
+        for(int y = 3*HEIGHT-1; y > 3*HEIGHT-1-lineHeight; y--)
+            histogram.setPixel(x, y, qRgb(0, 0, 255));
+    }
+
+    // display imageIn and histogram
+    displayImage(imageIn, QFileInfo(fileName).fileName());
+    displayImage(histogram, QFileInfo(fileName).fileName()+"_histogram");
 }

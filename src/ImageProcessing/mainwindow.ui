@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>735</width>
-    <height>514</height>
+    <height>864</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -221,6 +221,84 @@
      </layout>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="gBox_linearModification">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>490</y>
+      <width>561</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Linear Modification</string>
+    </property>
+    <widget class="QWidget" name="layoutWidget_6">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>20</y>
+       <width>371</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_linearModification">
+      <item>
+       <widget class="QPushButton" name="btn_linearModification_gray">
+        <property name="text">
+         <string>Apply (Gray Image)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_linearModification_Color">
+        <property name="text">
+         <string>Apply (Color Image)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="gBox_histogramEqual">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>590</y>
+      <width>561</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Histogram Equalization</string>
+    </property>
+    <widget class="QWidget" name="layoutWidget_7">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>20</y>
+       <width>371</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_histogramEqual">
+      <item>
+       <widget class="QPushButton" name="btn_histogramEqual_gray">
+        <property name="text">
+         <string>Apply (Gray Image)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_histogramEqual_Color">
+        <property name="text">
+         <string>Apply (Color Image)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
    <zorder>layoutWidget</zorder>
    <zorder>btn_browse</zorder>
    <zorder>layoutWidget</zorder>
@@ -228,6 +306,8 @@
    <zorder>gBox_hisStretch</zorder>
    <zorder>gBox_segmentation</zorder>
    <zorder>gBox_showHistogram</zorder>
+   <zorder>gBox_linearModification</zorder>
+   <zorder>gBox_histogramEqual</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
