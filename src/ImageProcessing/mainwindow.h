@@ -17,6 +17,9 @@ public:
     void saveImage(QImage &imgOut);
     int max(int num1, int num2);
     int min(int num1, int num2);
+    QImage drawHisGray(QImage &img);
+    void drawHisColor(QImage &img);
+
 
 private slots:
     void on_btn_browse_clicked();
@@ -34,6 +37,8 @@ private slots:
     void on_btn_showHis_gray_clicked();
 
     void on_btn_showHis_Color_clicked();
+
+    void on_btn_linearModification_gray_clicked();
 
 private:
     Ui::MainWindow *ui;

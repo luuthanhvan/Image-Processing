@@ -52,6 +52,42 @@ int MainWindow::min(int num1, int num2){
     return num1 < num2 ? num1 : num2;
 }
 
+QImage MainWindow::drawHisGray(QImage &img){
+    QImage histogram(256, HEIGHT, QImage::Format_ARGB32);
+    histogram.fill(Qt::white); // init histogram white
+    int h[256]; // mang luu tru so diem anh, diem anh tuong ung co gia tri tu 0..255
+    // vi du gia tri diem anh 100 xuat hien 10 lan thi h[100] = 10
+
+    for(int i = 0; i < 256; i++)
+        h[i] = 0;
+
+    // dem so luong diem anh
+    for(int x = 0; x < img.width(); x++){
+        for(int y = 0; y < img.height(); y++){
+            QRgb rgb = img.pixel(x, y); // lay gia tri diem anh tai vi tri (x, y)
+            int gray = qGray(rgb); // chuyen gia tri diem anh tai vi tri (x, y) ve gia tri muc xam
+            h[gray]++; // tang so luong diem anh len 1
+        }
+    }
+
+    // find max value in h[]
+    int maxValue = 0;
+    for(int i = 0; i < 256; i++){
+        maxValue = max(maxValue, h[i]);
+    }
+
+    int lineHeight = 0;
+    for(int x = 0; x < 256; x++){
+        lineHeight = (HEIGHT*h[x])/maxValue; // calculating ratio
+//        for(int y = HEIGHT-1; y > HEIGHT-1-lineHeight; y--)
+//            histogram.setPixel(x, y, qRgb(0, 0, 255)); // draw histogram
+        for(int y = HEIGHT-lineHeight; y < HEIGHT; y++)
+            histogram.setPixel(x, y, qRgb(0, 0, 255)); // draw histogram
+    }
+
+    return histogram;
+}
+
 void MainWindow::on_btn_browse_clicked(){
     // open file and assign file name to fileName variable
     QString fileName = QFileDialog::getOpenFileName(this, "Open File", "../../images",
@@ -97,8 +133,8 @@ void MainWindow::on_btn_hisSlide_gray_clicked(){
                 if(grayOut < 0)
                    grayOut = 0;
 
-            QColor colorOut = qRgb(grayOut, grayOut, grayOut);
-            imageOut.setPixel(x, y, colorOut.rgb()); // set pixel (x,y) with color (colorOut) for imageOut
+            imageIn.setPixel(x, y, qRgb(grayIn, grayIn, grayIn));
+            imageOut.setPixel(x, y, qRgb(grayOut, grayOut, grayOut)); // set pixel (x,y) with color (colorOut) for imageOut
         }
     }
     // display imageIn and imageOut
@@ -169,8 +205,8 @@ void MainWindow::on_btn_hisStretch_gray_clicked(){
                 if(grayOut < 0)
                     grayOut = 0;
 
-            QColor colorOut = qRgb(grayOut, grayOut, grayOut);
-            imageOut.setPixel(x, y, colorOut.rgb()); // set pixel (x,y) with color (colorOut) for imageOut
+            imageIn.setPixel(x, y, qRgb(grayIn, grayIn, grayIn));
+            imageOut.setPixel(x, y, qRgb(grayOut, grayOut, grayOut)); // set pixel (x,y) with color (colorOut) for imageOut
         }
     }
 
@@ -236,6 +272,7 @@ void MainWindow::on_btn_segmentation_gray_clicked(){
         for(int y = 0; y < imageIn.height(); y++){
             QRgb colorIn = imageIn.pixel(x, y); // get pixel value at (x,y)
             int gray = qGray(colorIn); // convert color value at (x,y) to gray value
+            imageIn.setPixel(x, y, qRgb(gray, gray, gray));
 
             // check threshold
             if(gray >= thresholding)
@@ -243,8 +280,7 @@ void MainWindow::on_btn_segmentation_gray_clicked(){
             else
                 gray = 0;
 
-            QColor colorOut = qRgb(gray, gray, gray);
-            imageOut.setPixel(x, y, colorOut.rgb()); // set pixel (x,y) with color (colorOut) for imageOut
+            imageOut.setPixel(x, y, qRgb(gray, gray, gray)); // set pixel (x,y) with color (colorOut) for imageOut
         }
     }
     // display imageIn and imageOut
@@ -352,4 +388,54 @@ void MainWindow::on_btn_showHis_Color_clicked(){
     // display imageIn and histogram
     displayImage(imageIn, QFileInfo(fileName).fileName());
     displayImage(histogram, QFileInfo(fileName).fileName()+"_histogram");
+}
+
+void MainWindow::on_btn_linearModification_gray_clicked(){
+    QString fileName = ui->ln_fileName->text(); // get file name from line edit bar ln_fileName (QLineEdit)
+    QImage imageIn(fileName);
+    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+
+    int minValue = 255, maxValue = 0;
+
+    // duyet qua tung diem anh va tim diem anh co gia tri lon nhat va nho nhat
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y);
+            int gray = qGray(rgb);
+            maxValue = max(maxValue, gray);
+            minValue = min(minValue, gray);
+        }
+    }
+    qDebug() << "max value:" << maxValue;
+    qDebug() << "min value:" << minValue;
+
+    // duyet qua tung diem anh 1 lan nua, thay doi gia tri cac diem anh bang cong thuc:
+    // O(x,y) = ((I(x,y) - min[I(x,y)]) * 255) / (max[I(x,y)] - min[I(x,y)])
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y);
+            int grayIn = qGray(rgb);
+            int grayOut = ((grayIn-minValue)*255)/(maxValue-minValue);
+
+            // check threshold
+            if(grayOut > 255)
+                grayOut = 255;
+            else
+                if(grayOut < 0)
+                    grayOut = 0;
+
+            imageIn.setPixel(x, y, qRgb(grayIn, grayIn, grayIn));
+            imageOut.setPixel(x, y, qRgb(grayOut, grayOut, grayOut));
+        }
+    }
+
+    // draw histogram of imageIn and display it
+    QImage histogramImgIn = drawHisGray(imageIn);
+    displayImage(imageIn, QFileInfo(fileName).fileName());
+    displayImage(histogramImgIn, QFileInfo(fileName).fileName()+"_histogram");
+
+    // draw histogram of imageOut and display it
+    QImage histogramImgOut = drawHisGray(imageOut);
+    displayImage(imageOut, QFileInfo(fileName).fileName()+"_linear_modification");
+    displayImage(histogramImgOut, QFileInfo(fileName).fileName()+"_linear_modification_histogram");
 }
