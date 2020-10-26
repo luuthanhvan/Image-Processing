@@ -168,7 +168,7 @@
     <property name="title">
      <string>Segmentation</string>
     </property>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>130</x>
@@ -312,6 +312,19 @@
      </layout>
     </widget>
    </widget>
+   <widget class="QPushButton" name="btn_browse_2">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>250</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Browse</string>
+    </property>
+   </widget>
    <zorder>layoutWidget</zorder>
    <zorder>btn_browse</zorder>
    <zorder>layoutWidget</zorder>
@@ -321,6 +334,7 @@
    <zorder>gBox_showHistogram</zorder>
    <zorder>gBox_linearModification</zorder>
    <zorder>gBox_histogramEqual</zorder>
+   <zorder>btn_browse_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
