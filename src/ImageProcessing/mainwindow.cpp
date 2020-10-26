@@ -229,6 +229,7 @@ void MainWindow::on_btn_hisSlide_Color_clicked(){
     // display imageIn and imageOut
     displayImage(imageIn, QFileInfo(fileName).fileName());
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_his_slide");
+//    saveImage(imageOut);
 }
 
 /* Histogram stretch method => increasing or decreasing CONTRAST of a gray image */
@@ -263,7 +264,7 @@ void MainWindow::on_btn_hisStretch_gray_clicked(){
     }
 
     // save imageOut
-    saveImage(imageOut);
+//    saveImage(imageOut);
 
     // display imageIn and imageOut
     displayImage(imageIn, QFileInfo(fileName).fileName());
@@ -306,6 +307,7 @@ void MainWindow::on_btn_hisStretch_Color_clicked(){
     // display imageIn and imageOut
     displayImage(imageIn, QFileInfo(fileName).fileName());
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_his_stretch");
+//    saveImage(imageOut);
 }
 
 /* Segmentation method */
@@ -496,7 +498,7 @@ void MainWindow::on_btn_linearModification_Color_clicked(){
     QImage imageIn(fileName);
     QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
 
-    int minValue = 255, maxValue = 0;
+    int minValue = 256, maxValue = -1;
 
     // duyet qua tung diem anh va tim diem anh co gia tri lon nhat va nho nhat
     for(int x = 0; x < imageIn.width(); x++){
@@ -511,8 +513,8 @@ void MainWindow::on_btn_linearModification_Color_clicked(){
             minValue = min(minValue, v);
         }
     }
-    qDebug() << "max value:" << maxValue;
-    qDebug() << "min value:" << minValue;
+//    qDebug() << "max value:" << maxValue;
+//    qDebug() << "min value:" << minValue;
 
     // duyet qua tung diem anh 1 lan nua, thay doi gia tri cac diem anh bang cong thuc:
     // O(x,y) = ((I(x,y) - min[I(x,y)]) * 255) / (max[I(x,y)] - min[I(x,y)])
@@ -546,6 +548,8 @@ void MainWindow::on_btn_linearModification_Color_clicked(){
     QImage histogramImgOut = drawHisColor(imageOut);
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_linear_modification");
     displayImage(histogramImgOut, QFileInfo(fileName).fileName()+"_linear_modification_histogram");
+
+//    saveImage(imageOut);
 }
 
 void MainWindow::on_btn_histogramEqual_gray_clicked(){
@@ -664,4 +668,6 @@ void MainWindow::on_btn_histogramEqual_Color_clicked(){
     QImage histogramImgOut = drawHisColor(imageOut);
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_histogram_equalization");
     displayImage(histogramImgOut, QFileInfo(fileName).fileName()+"_histogram_equalization_histogram");
+
+//    saveImage(imageOut);
 }
