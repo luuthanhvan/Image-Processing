@@ -27,6 +27,35 @@ private slots:
 
     void on_btn_medianFilter_Color_clicked();
 
+    void on_btn_gradientFilter_Gx_Gray_clicked();
+
+    void on_btn_gradientFilter_Gy_Gray_clicked();
+
+    void on_btn_gradientFilter_Gx_Color_clicked();
+
+    void on_btn_gradientFilter_Gy_Color_clicked();
+
+    void on_btn_roberFilter_Gx_Gray_clicked();
+
+    void on_btn_roberFilter_Gy_Gray_clicked();
+
+    void on_btn_roberFilter_Gx_Color_clicked();
+
+    void on_btn_roberFilter_Gy_Color_clicked();
+
+    void on_btn_sobelFilter_Gx_Gray_clicked();
+
+    void on_btn_sobelFilter_Gy_Gray_clicked();
+
+    void on_btn_sobelFilter_Gx_Color_clicked();
+
+    void on_btn_sobelFilter_Gy_Color_clicked();
+
+    void on_btn_autoSegmentation_Gray_clicked();
+
+    void on_btn_autoSegmentation_Otsu_Gray_clicked();
+
+
 private:
     Ui::MainWindow *ui;
 };
