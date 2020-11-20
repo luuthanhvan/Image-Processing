@@ -58,7 +58,7 @@ void MainWindow::on_btn_meanFilter_gray_clicked(){
     imageOut.fill(Qt::white);
     int size = 3;
     int cells = size*size;
-    int margin = size/2;
+    int margin = size/2; // margin: avoid removed border of the images
     int sumGray;
     for(int x = margin; x < imageIn.width()-margin; x++){
         for(int y = margin; y < imageIn.height()-margin; y++){
@@ -173,7 +173,9 @@ void MainWindow::on_btn_gradientFilter_Gx_Gray_clicked(){
     QImage imageIn(fileName);
     QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
     imageOut.fill(Qt::white);
+
     int gray1 = 0, gray2 = 0, grayOut;
+
     for(int x = 0; x < imageIn.width()-1; x++){
         for(int y = 0; y < imageIn.height(); y++){
             QRgb rgb1 = imageIn.pixel(x, y);
@@ -182,6 +184,7 @@ void MainWindow::on_btn_gradientFilter_Gx_Gray_clicked(){
             QRgb rgb2 = imageIn.pixel(x+1, y);
             gray2 = qGray(rgb2);
 
+            // gx = I(x+1, y) - I(x, y)
             grayOut = abs(gray2 - gray1);
 
             imageOut.setPixel(x, y, qRgb(grayOut, grayOut, grayOut));
@@ -205,6 +208,7 @@ void MainWindow::on_btn_gradientFilter_Gy_Gray_clicked(){
             QRgb rgb2 = imageIn.pixel(x, y+1);
             gray2 = qGray(rgb2);
 
+            // gy = I(x, y+1) - I(x, y)
             grayOut = abs(gray2 - gray1);
 
             imageOut.setPixel(x, y, qRgb(grayOut, grayOut, grayOut));
@@ -278,6 +282,7 @@ void MainWindow::on_btn_roberFilter_Gx_Gray_clicked(){
             QRgb rgb2 = imageIn.pixel(x+1, y);
             gray2 = qGray(rgb2);
 
+            // gx = I(x+1, y) - I(x, y+1)
             grayOut = abs(gray2 - gray1);
 
             imageOut.setPixel(x, y, qRgb(grayOut, grayOut, grayOut));
@@ -301,6 +306,7 @@ void MainWindow::on_btn_roberFilter_Gy_Gray_clicked(){
             QRgb rgb2 = imageIn.pixel(x, y);
             gray2 = qGray(rgb2);
 
+            // gy = I(x, y) - I(x+1, y+1)
             grayOut = abs(gray2 - gray1);
 
             imageOut.setPixel(x, y, qRgb(grayOut, grayOut, grayOut));
@@ -369,6 +375,7 @@ void MainWindow::on_btn_sobelFilter_Gx_Gray_clicked(){
     int margin = maskSize/2;
     int maskSobel[maskSize][maskSize];
     int sumMask;
+
     maskSobel[0][0] = -1; maskSobel[0][1] = 0; maskSobel[0][2] = 1;
     maskSobel[1][0] = -2; maskSobel[1][1] = 0; maskSobel[1][2] = 2;
     maskSobel[2][0] = -1; maskSobel[2][1] = 0; maskSobel[2][2] = 1;
@@ -420,68 +427,66 @@ void MainWindow::on_btn_sobelFilter_Gy_Gray_clicked(){
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_sobel_filter_gy");
 }
 
-void MainWindow::on_btn_sobelFilter_Gx_Color_clicked(){
+void MainWindow::on_btn_prewittFilter_Gx_Gray_clicked(){
     QString fileName = ui->ln_fileName->text();
     QImage imageIn(fileName);
     QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
     imageOut.fill(Qt::white);
     int maskSize = 3;
     int margin = maskSize/2;
-    int maskSobel[maskSize][maskSize];
+    int maskPrewitt[maskSize][maskSize];
     int sumMask;
-    maskSobel[0][0] = -1; maskSobel[0][1] = 0; maskSobel[0][2] = 1;
-    maskSobel[1][0] = -2; maskSobel[1][1] = 0; maskSobel[1][2] = 2;
-    maskSobel[2][0] = -1; maskSobel[2][1] = 0; maskSobel[2][2] = 1;
+
+    maskPrewitt[0][0] = -1; maskPrewitt[0][1] = 0; maskPrewitt[0][2] = 1;
+    maskPrewitt[1][0] = -1; maskPrewitt[1][1] = 0; maskPrewitt[1][2] = 1;
+    maskPrewitt[2][0] = -1; maskPrewitt[2][1] = 0; maskPrewitt[2][2] = 1;
 
     for(int x = margin; x < imageIn.width()-margin; x++){
         for(int y = margin; y < imageIn.height()-margin; y++){
             sumMask = 0;
-            int h, s, v;
             for(int i = -margin; i <= margin; i++){
                 for(int j = -margin; j <= margin; j++){
-                    QColor colorIn = imageIn.pixel(x+j, y+i);
-                    colorIn.getHsv(&h, &s, &v);
-                    sumMask += (v*maskSobel[i+margin][j+margin]);
+                    QRgb rgb = imageIn.pixel(x+j, y+i);
+                    int gray = qGray(rgb);
+                    sumMask += (gray*maskPrewitt[i+margin][j+margin]);
                 }
             }
-            QColor colorOut = QColor::fromHsv(h, s, abs(sumMask));
-            imageOut.setPixel(x, y, colorOut.rgb());
+            imageOut.setPixel(x, y, qRgb(abs(sumMask), abs(sumMask), abs(sumMask)));
         }
     }
     displayImage(imageIn, QFileInfo(fileName).fileName());
-    displayImage(imageOut, QFileInfo(fileName).fileName()+"_sobel_filter_gx");
+    displayImage(imageOut, QFileInfo(fileName).fileName()+"_prewitt_filter_gx");
 }
 
-void MainWindow::on_btn_sobelFilter_Gy_Color_clicked(){
+void MainWindow::on_btn_prewittFilter_Gy_Gray_clicked(){
     QString fileName = ui->ln_fileName->text();
     QImage imageIn(fileName);
     QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
     imageOut.fill(Qt::white);
     int maskSize = 3;
     int margin = maskSize/2;
-    int maskSobel[maskSize][maskSize];
+    int maskPrewitt[maskSize][maskSize];
     int sumMask;
-    maskSobel[0][0] = -1; maskSobel[0][1] = -2; maskSobel[0][2] = -1;
-    maskSobel[1][0] = 0; maskSobel[1][1] = 0; maskSobel[1][2] = 0;
-    maskSobel[2][0] = 1; maskSobel[2][1] = 2; maskSobel[2][2] = 1;
+
+    maskPrewitt[0][0] = -1; maskPrewitt[0][1] = -1; maskPrewitt[0][2] = -1;
+    maskPrewitt[1][0] = 0; maskPrewitt[1][1] = 0; maskPrewitt[1][2] = 0;
+    maskPrewitt[2][0] = 1; maskPrewitt[2][1] = 1; maskPrewitt[2][2] = 1;
 
     for(int x = margin; x < imageIn.width()-margin; x++){
         for(int y = margin; y < imageIn.height()-margin; y++){
             sumMask = 0;
-            int h, s, v;
             for(int i = -margin; i <= margin; i++){
                 for(int j = -margin; j <= margin; j++){
-                    QColor colorIn = imageIn.pixel(x+j, y+i);
-                    colorIn.getHsv(&h, &s, &v);
-                    sumMask += (v*maskSobel[i+margin][j+margin]);
+                    QRgb rgb = imageIn.pixel(x+j, y+i);
+                    int gray = qGray(rgb);
+                    sumMask += (gray*maskPrewitt[i+margin][j+margin]);
                 }
             }
-            QColor colorOut = QColor::fromHsv(h, s, abs(sumMask));
-            imageOut.setPixel(x, y, colorOut.rgb());
+            imageOut.setPixel(x, y, qRgb(abs(sumMask), abs(sumMask), abs(sumMask)));
         }
     }
     displayImage(imageIn, QFileInfo(fileName).fileName());
-    displayImage(imageOut, QFileInfo(fileName).fileName()+"_sobel_filter_gy");
+    displayImage(imageOut, QFileInfo(fileName).fileName()+"_prewitt_filter_gy");
 }
 
 void MainWindow::on_btn_autoSegmentation_Gray_clicked(){
@@ -489,12 +494,13 @@ void MainWindow::on_btn_autoSegmentation_Gray_clicked(){
     QImage imageIn(fileName);
     QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
 
-    /* choose thresholding */
-    int c = 127;
-    int newc = c;
+    int c;
+    int newc = 127; // init new thresholding
+
     do{
         int G1 = 0, G2 = 0;
-        int count1 = 0, count2 = 0;
+        int count1 = 0; // the probability of the first class occurrence
+        int count2 = 0; // the probability of the second class occurrence
         c = newc;
         for(int x = 0; x < imageIn.width(); x++){
             for(int y = 0; y < imageIn.height(); y++){
@@ -515,7 +521,7 @@ void MainWindow::on_btn_autoSegmentation_Gray_clicked(){
         newc = (M1 + M2)/2;
     } while(abs(newc - c) != 0);
 
-    // segmentation
+    /* segmentation */
     int thresholding = newc;
     // travesing all pixels of imageIn
     for(int x = 0; x < imageIn.width(); x++){
@@ -541,18 +547,22 @@ void MainWindow::on_btn_autoSegmentation_Otsu_Gray_clicked(){
     QString fileName = ui->ln_fileName->text();
     QImage imageIn(fileName);
     QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
-    /* choose thresholding */
-    // initialize variables
-    int threshold = 127, varMax = 0, sum = 0, sumB = 0, q1 = 0, q2 = 0, u1 = 0, u2 = 0;
-    int maxIntensity = 255;
-    int N = imageIn.width() * imageIn.height();
 
-    // initialize histogram
-    int histogram[256];
-    for(int i = 0; i < 256; i++)
+    // initialize variables
+    int meanCurrent = 0;
+    int count1 = 0; // the probability of the first class occurrence
+    int count2 = 0; // the probability of the second class occurrence
+    float maxVariance = 0;
+    int thresholding = 0;
+    int maxIntensity = 256;
+    int nbPixels = imageIn.width() * imageIn.height(); // number of pixels
+
+    // initialize histogram h(x)
+    int histogram[maxIntensity];
+    for(int i = 0; i < maxIntensity; i++)
         histogram[i] = 0;
 
-    // calculate historgram
+    // calculate historgram h(x)
     for(int x = 0; x < imageIn.width(); x++){
         for(int y = 0; y < imageIn.height(); y++){
             QRgb rgb = imageIn.pixel(x, y);
@@ -561,25 +571,37 @@ void MainWindow::on_btn_autoSegmentation_Otsu_Gray_clicked(){
         }
     }
 
-    for(int i = 0; i <= maxIntensity; i++){
-        sum += i*histogram[i];
+    // calculate mean value for the overall histogram (x * h(x))
+    int meanTotal = 0;
+    for(int i = 0; i < maxIntensity; i++){
+        meanTotal += i*histogram[i];
     }
 
-    for (int t = 0; t <= maxIntensity; t++){
-        q1 += histogram[t];
-        if(q1 == 0)
+    /* choose thresholding */
+    for (int t = 0; t <  maxIntensity; t++){
+        // calculate count1 for the current t
+        count1 += histogram[t];
+
+        if(count1 == 0)
             continue;
-        q2 = N - q1;
 
-        sumB += (t*histogram[t]);
-        u1 = sumB/q1;
-        u2 = (sum - sumB)/q2;
+        // calculate count2 for the current t
+        count2 = nbPixels - count1;
 
-        int variance = q1*q2*(u1-u2)*((u1-u2));
+        meanCurrent += (t*histogram[t]);
 
-        if(variance > varMax){
-            threshold = t;
-            varMax = variance;
+        // calculate mean value for the first class
+        float mean1 = (float)meanCurrent/(float)count1;
+        // calculate mean value for the second class
+        float mean2 = ((float)meanTotal - (float)meanCurrent)/(float)count2;
+
+        // calculate the between-class varience
+        float variance = (float)count1 * (float)count2 * (mean2 - mean1) * (mean2 - mean1);
+
+        // check if new maximum variance found
+        if(variance > maxVariance){
+            maxVariance = variance; // update maximum variance
+            thresholding = t;
         }
     }
 
@@ -591,7 +613,7 @@ void MainWindow::on_btn_autoSegmentation_Otsu_Gray_clicked(){
             int gray = qGray(colorIn); // convert color value at (x,y) to gray value
 
             // check threshold
-            if(gray >= threshold)
+            if(gray >= thresholding)
                 gray = 255;
             else
                 gray = 0;

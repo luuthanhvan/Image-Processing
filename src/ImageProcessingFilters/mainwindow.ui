@@ -334,45 +334,6 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="gBox_sobelFilter_Color">
-    <property name="geometry">
-     <rect>
-      <x>570</x>
-      <y>330</y>
-      <width>481</width>
-      <height>61</height>
-     </rect>
-    </property>
-    <property name="title">
-     <string>Sobel Filter (Color Image)</string>
-    </property>
-    <widget class="QWidget" name="layoutWidget_12">
-     <property name="geometry">
-      <rect>
-       <x>130</x>
-       <y>20</y>
-       <width>311</width>
-       <height>41</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_sobelFilter_Color">
-      <item>
-       <widget class="QPushButton" name="btn_sobelFilter_Gx_Color">
-        <property name="text">
-         <string>Apply (Gx)</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="btn_sobelFilter_Gy_Color">
-        <property name="text">
-         <string>Apply (Gy)</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </widget>
    <widget class="QGroupBox" name="gBox_autoSegmentation">
     <property name="geometry">
      <rect>
@@ -383,7 +344,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>Auto Segmentation (Sequence Algorithm)</string>
+     <string>Auto Segmentation</string>
     </property>
     <widget class="QWidget" name="layoutWidget_13">
      <property name="geometry">
@@ -398,26 +359,33 @@
       <item>
        <widget class="QPushButton" name="btn_autoSegmentation_Gray">
         <property name="text">
-         <string>Apply (Gray Image)</string>
+         <string>Sequential Algorithm</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_autoSegmentation_Otsu_Gray">
+        <property name="text">
+         <string>Otsu Algorithm</string>
         </property>
        </widget>
       </item>
      </layout>
     </widget>
    </widget>
-   <widget class="QGroupBox" name="gBox_autoSegmentation_Otsu">
+   <widget class="QGroupBox" name="gBox_prewittFilter_Gray">
     <property name="geometry">
      <rect>
       <x>570</x>
-      <y>420</y>
+      <y>330</y>
       <width>481</width>
       <height>61</height>
      </rect>
     </property>
     <property name="title">
-     <string>Auto Segmentation (Otsu Algorithm)</string>
+     <string>Prewitt Filter (Gray Image)</string>
     </property>
-    <widget class="QWidget" name="layoutWidget_14">
+    <widget class="QWidget" name="layoutWidget_11">
      <property name="geometry">
       <rect>
        <x>130</x>
@@ -426,11 +394,18 @@
        <height>41</height>
       </rect>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_autoSegmentation_Otsu">
+     <layout class="QHBoxLayout" name="horizontalLayout_prewittFilter_Gray">
       <item>
-       <widget class="QPushButton" name="btn_autoSegmentation_Otsu_Gray">
+       <widget class="QPushButton" name="btn_prewittFilter_Gx_Gray">
         <property name="text">
-         <string>Apply (Gray Image)</string>
+         <string>Apply (Gx)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_prewittFilter_Gy_Gray">
+        <property name="text">
+         <string>Apply (Gy)</string>
         </property>
        </widget>
       </item>

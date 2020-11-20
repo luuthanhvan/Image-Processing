@@ -47,14 +47,14 @@ private slots:
 
     void on_btn_sobelFilter_Gy_Gray_clicked();
 
-    void on_btn_sobelFilter_Gx_Color_clicked();
-
-    void on_btn_sobelFilter_Gy_Color_clicked();
-
     void on_btn_autoSegmentation_Gray_clicked();
 
     void on_btn_autoSegmentation_Otsu_Gray_clicked();
 
+
+    void on_btn_prewittFilter_Gx_Gray_clicked();
+
+    void on_btn_prewittFilter_Gy_Gray_clicked();
 
 private:
     Ui::MainWindow *ui;
