@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1070</width>
-    <height>650</height>
+    <width>1081</width>
+    <height>706</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -337,8 +337,8 @@
    <widget class="QGroupBox" name="gBox_autoSegmentation">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>420</y>
+      <x>300</x>
+      <y>410</y>
       <width>481</width>
       <height>61</height>
      </rect>
@@ -415,14 +415,14 @@
    <widget class="QGroupBox" name="gBox_imageBinaires">
     <property name="geometry">
      <rect>
-      <x>570</x>
-      <y>420</y>
+      <x>20</x>
+      <y>490</y>
       <width>481</width>
       <height>61</height>
      </rect>
     </property>
     <property name="title">
-     <string>Image Binaires</string>
+     <string>Images Binaires for Sequential Algorithm</string>
     </property>
     <widget class="QWidget" name="layoutWidget_14">
      <property name="geometry">
@@ -451,13 +451,130 @@
      </layout>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="gBox_imageBinaires_OpenClose_Sequential">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>570</y>
+      <width>481</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Images Binaires for Sequential Algorithm</string>
+    </property>
+    <widget class="QWidget" name="layoutWidget_15">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>20</y>
+       <width>311</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_imageBinaires_OpenClose_Sequential">
+      <item>
+       <widget class="QPushButton" name="btn_imageBinaires_Open_Sequential">
+        <property name="text">
+         <string>Open</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_imageBinaires_Close_Sequential">
+        <property name="text">
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="gBox_imageBinaires_OpenClose_Otsu">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>570</y>
+      <width>481</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Images Binaires for Otsu Algorithm</string>
+    </property>
+    <widget class="QWidget" name="layoutWidget_16">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>20</y>
+       <width>311</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_imageBinaires_OpenClose_Otsu">
+      <item>
+       <widget class="QPushButton" name="btn_imageBinaires_Open_Otsu">
+        <property name="text">
+         <string>Open</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_imageBinaires_Close_Otsu">
+        <property name="text">
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="gBox_imageBinaires_Otsu">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>490</y>
+      <width>481</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Images Binaires for Otsu Algorithm</string>
+    </property>
+    <widget class="QWidget" name="layoutWidget_17">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>20</y>
+       <width>311</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_imageBinaires_Otsu">
+      <item>
+       <widget class="QPushButton" name="btn_imageBinaires_Erosion_Otsu">
+        <property name="text">
+         <string>Erosion</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_imageBinaires_Dilation_Otsu">
+        <property name="text">
+         <string>Dilation</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1070</width>
+     <width>1081</width>
      <height>20</height>
     </rect>
    </property>

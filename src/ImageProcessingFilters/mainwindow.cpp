@@ -706,7 +706,7 @@ void MainWindow::on_btn_imageBinaires_Erosion_clicked(){
     /* display imageIn, imageOut and imageOut2 */
     displayImage(imageIn, QFileInfo(fileName).fileName());
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_auto_segmentation_sequential");
-    displayImage(imageOut2, QFileInfo(fileName).fileName()+"_post_segmentation_erosion");
+    displayImage(imageOut2, QFileInfo(fileName).fileName()+"_post_segmentation_erosion_sequential");
 }
 
 void MainWindow::on_btn_imageBinaires_Dilation_clicked(){
@@ -783,8 +783,684 @@ void MainWindow::on_btn_imageBinaires_Dilation_clicked(){
             }
         }
     }
+
     /* display imageIn, imageOut and imageOut2 */
     displayImage(imageIn, QFileInfo(fileName).fileName());
     displayImage(imageOut, QFileInfo(fileName).fileName()+"_auto_segmentation_sequential");
-    displayImage(imageOut2, QFileInfo(fileName).fileName()+"_post_segmentation_dilation");
+    displayImage(imageOut2, QFileInfo(fileName).fileName()+"_post_segmentation_dilation_sequential");
+}
+
+void MainWindow::on_btn_imageBinaires_Open_Sequential_clicked(){
+    QString fileName = ui->ln_fileName->text();
+    QImage imageIn(fileName);
+    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+
+    int c;
+    int newc = 127; // init new thresholding
+
+    do{
+        int G1 = 0, G2 = 0;
+        int count1 = 0; // the probability of the first class occurrence
+        int count2 = 0; // the probability of the second class occurrence
+        c = newc;
+        for(int x = 0; x < imageIn.width(); x++){
+            for(int y = 0; y < imageIn.height(); y++){
+                QRgb rgb = imageIn.pixel(x, y);
+                int gray = qGray(rgb);
+                if(gray > c){
+                    G1 += gray;
+                    count1++;
+                }
+                else if(gray <= c){
+                    G2 += gray;
+                    count2++;
+                }
+            }
+        }
+        int M1 = G1/count1;
+        int M2 = G2/count2;
+        newc = (M1 + M2)/2;
+    } while(abs(newc - c) != 0);
+
+    /* segmentation */
+    int thresholding = newc;
+    qDebug() << "thresholding for Sequential algorithm:" << thresholding; // result: 88
+    // travesing all pixels of imageIn
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb colorIn = imageIn.pixel(x, y); // get pixel value at (x,y)
+            int gray = qGray(colorIn); // convert color value at (x,y) to gray value
+
+            // check threshold
+            if(gray >= thresholding)
+                gray = 255;
+            else
+                gray = 0;
+
+            imageOut.setPixel(x, y, qRgb(gray, gray, gray)); // set pixel (x,y) with color (colorOut) for imageOut
+        }
+    }
+
+    int size = 3;
+    int kernel[size][size] = {{0, 1, 0},
+                              {1, 1, 1},
+                              {0, 1, 0}}; // cross shape
+    int margin = size/2;
+    int cGray;
+    QImage imageOut2(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+    imageOut2.fill(Qt::white);
+
+    /* post-segmentation: erosion */
+    for(int x = margin; x < imageIn.width()-margin; x++){
+        for(int y = margin; y < imageIn.height()-margin; y++){
+            int ok = 1;
+            for(int i = -margin; i <= margin; i++){
+                for(int j = -margin; j <= margin; j++){
+                    cGray = qGray(imageOut.pixel(x+i, y+j));
+                    ok = ok && (kernel[i][j] == 0 || cGray == 0);
+                }
+            }
+            if(ok)
+                imageOut2.setPixel(x, y, qRgb(0, 0, 0));
+        }
+    }
+
+    QImage imageOut3(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+    imageOut3.fill(Qt::white);
+
+    /* post-segmentation: dilation */
+    for(int x = margin; x < imageIn.width()-margin; x++){
+        for(int y = margin; y < imageIn.height()-margin; y++){
+            cGray = qGray(imageOut2.pixel(x, y));
+            if(cGray == 0){
+                for(int i = -margin; i <= margin; i++){
+                    for(int j = -margin; j <= margin; j++){
+                        if(kernel[i+margin][j+margin]){
+                            imageOut3.setPixel(x+i, y+j, qRgb(0, 0, 0));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* display imageIn and imageOut3 */
+    displayImage(imageIn, QFileInfo(fileName).fileName());
+    displayImage(imageOut3, QFileInfo(fileName).fileName()+"_post_segmentation_open_sequential");
+}
+
+void MainWindow::on_btn_imageBinaires_Close_Sequential_clicked(){
+    QString fileName = ui->ln_fileName->text();
+    QImage imageIn(fileName);
+    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+
+    int c;
+    int newc = 127; // init new thresholding
+
+    do{
+        int G1 = 0, G2 = 0;
+        int count1 = 0; // the probability of the first class occurrence
+        int count2 = 0; // the probability of the second class occurrence
+        c = newc;
+        for(int x = 0; x < imageIn.width(); x++){
+            for(int y = 0; y < imageIn.height(); y++){
+                QRgb rgb = imageIn.pixel(x, y);
+                int gray = qGray(rgb);
+                if(gray > c){
+                    G1 += gray;
+                    count1++;
+                }
+                else if(gray <= c){
+                    G2 += gray;
+                    count2++;
+                }
+            }
+        }
+        int M1 = G1/count1;
+        int M2 = G2/count2;
+        newc = (M1 + M2)/2;
+    } while(abs(newc - c) != 0);
+
+    /* segmentation */
+    int thresholding = newc;
+    qDebug() << "thresholding for Sequential algorithm:" << thresholding; // result: 88
+    // travesing all pixels of imageIn
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb colorIn = imageIn.pixel(x, y); // get pixel value at (x,y)
+            int gray = qGray(colorIn); // convert color value at (x,y) to gray value
+
+            // check threshold
+            if(gray >= thresholding)
+                gray = 255;
+            else
+                gray = 0;
+
+            imageOut.setPixel(x, y, qRgb(gray, gray, gray)); // set pixel (x,y) with color (colorOut) for imageOut
+        }
+    }
+
+    int size = 3;
+    int kernel[size][size] = {{0, 1, 0},
+                              {1, 1, 1},
+                              {0, 1, 0}}; // cross shape
+    int margin = size/2;
+    int cGray;
+    QImage imageOut2(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+    imageOut2.fill(Qt::white);
+
+    /* post-segmentation: dilation */
+    for(int x = margin; x < imageIn.width()-margin; x++){
+        for(int y = margin; y < imageIn.height()-margin; y++){
+            cGray = qGray(imageOut.pixel(x, y));
+            if(cGray == 0){
+                for(int i = -margin; i <= margin; i++){
+                    for(int j = -margin; j <= margin; j++){
+                        if(kernel[i+margin][j+margin]){
+                            imageOut2.setPixel(x+i, y+j, qRgb(0, 0, 0));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    QImage imageOut3(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+    imageOut3.fill(Qt::white);
+
+    /* post-segmentation: erosion */
+    for(int x = margin; x < imageIn.width()-margin; x++){
+        for(int y = margin; y < imageIn.height()-margin; y++){
+            int ok = 1;
+            for(int i = -margin; i <= margin; i++){
+                for(int j = -margin; j <= margin; j++){
+                    cGray = qGray(imageOut2.pixel(x+i, y+j));
+                    ok = ok && (kernel[i][j] == 0 || cGray == 0);
+                }
+            }
+            if(ok)
+                imageOut3.setPixel(x, y, qRgb(0, 0, 0));
+        }
+    }
+
+    /* display imageIn, imageOut and imageOut2 */
+    displayImage(imageIn, QFileInfo(fileName).fileName());
+    displayImage(imageOut3, QFileInfo(fileName).fileName()+"_post_segmentation_close_sequential");
+}
+
+void MainWindow::on_btn_imageBinaires_Erosion_Otsu_clicked(){
+    QString fileName = ui->ln_fileName->text();
+    QImage imageIn(fileName);
+    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+
+    // initialize variables
+    int sumCurrent = 0;
+    int count1 = 0; // the probability of the first class occurrence
+    int count2 = 0; // the probability of the second class occurrence
+    float maxVariance = 0;
+    int thresholding = 0;
+    int maxIntensity = 256;
+    int nbPixels = imageIn.width() * imageIn.height(); // number of pixels
+
+    // initialize histogram h(x)
+    int histogram[maxIntensity];
+    for(int i = 0; i < maxIntensity; i++)
+        histogram[i] = 0;
+
+    // calculate historgram h(x)
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y);
+            int gray = qGray(rgb);
+            histogram[gray]++;
+        }
+    }
+
+    // calculate (x * h(x)) for the overall histogram
+    int sum = 0;
+    for(int x = 0; x < maxIntensity; x++){
+        sum += (x * histogram[x]);
+    }
+
+    /* choose thresholding */
+    for (int t = 0; t <  maxIntensity; t++){
+        // calculate count1 for the current t
+        count1 += histogram[t];
+
+        if(count1 == 0)
+            continue;
+
+        // calculate count2 for the current t
+        count2 = nbPixels - count1;
+
+        sumCurrent += (t*histogram[t]);
+
+        // calculate mean value for the first class
+        float mean1 = (float)sumCurrent/(float)count1;
+        // calculate mean value for the second class
+        float mean2 = ((float)sum - (float)sumCurrent)/(float)count2;
+
+        // calculate the between-class varience
+        float variance = (float)count1 * (float)count2 * (mean2 - mean1) * (mean2 - mean1);
+
+        // check if new maximum variance found
+        if(variance > maxVariance){
+            maxVariance = variance; // update maximum variance
+            thresholding = t; // choose the thresholding with the maximum variance
+        }
+    }
+
+    /* segmentation */
+    qDebug() << "thresholding for Otsu algorithm:" << thresholding; // result: 88
+    // travesing all pixels of imageIn
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb colorIn = imageIn.pixel(x, y); // get pixel value at (x,y)
+            int gray = qGray(colorIn); // convert color value at (x,y) to gray value
+
+            // check threshold
+            if(gray >= thresholding)
+                gray = 255;
+            else
+                gray = 0;
+
+            imageOut.setPixel(x, y, qRgb(gray, gray, gray)); // set pixel (x,y) with color (colorOut) for imageOut
+        }
+    }
+
+    /* post-segmentation */
+    int size = 3;
+    int kernel[size][size] = {{0, 1, 0},
+                              {1, 1, 1},
+                              {0, 1, 0}}; // cross shape
+    int margin = size/2;
+    int cGray;
+    QImage imageOut2(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+    imageOut2.fill(Qt::white);
+
+    for(int x = margin; x < imageIn.width()-margin; x++){
+        for(int y = margin; y < imageIn.height()-margin; y++){
+            int ok = 1;
+            for(int i = -margin; i <= margin; i++){
+                for(int j = -margin; j <= margin; j++){
+                    cGray = qGray(imageOut.pixel(x+i, y+j));
+                    ok = ok && (kernel[i][j] == 0 || cGray == 0);
+                }
+            }
+            if(ok)
+                imageOut2.setPixel(x, y, qRgb(0, 0, 0));
+        }
+    }
+
+    /* display imageIn, imageOut and imageOut2 */
+    displayImage(imageIn, QFileInfo(fileName).fileName());
+    displayImage(imageOut, QFileInfo(fileName).fileName()+"_auto_segmentation_otsu");
+    displayImage(imageOut2, QFileInfo(fileName).fileName()+"_post_segmentation_erosion_otsu");
+}
+
+void MainWindow::on_btn_imageBinaires_Dilation_Otsu_clicked(){
+    QString fileName = ui->ln_fileName->text();
+    QImage imageIn(fileName);
+    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+
+    // initialize variables
+    int sumCurrent = 0;
+    int count1 = 0; // the probability of the first class occurrence
+    int count2 = 0; // the probability of the second class occurrence
+    float maxVariance = 0;
+    int thresholding = 0;
+    int maxIntensity = 256;
+    int nbPixels = imageIn.width() * imageIn.height(); // number of pixels
+
+    // initialize histogram h(x)
+    int histogram[maxIntensity];
+    for(int i = 0; i < maxIntensity; i++)
+        histogram[i] = 0;
+
+    // calculate historgram h(x)
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y);
+            int gray = qGray(rgb);
+            histogram[gray]++;
+        }
+    }
+
+    // calculate (x * h(x)) for the overall histogram
+    int sum = 0;
+    for(int x = 0; x < maxIntensity; x++){
+        sum += (x * histogram[x]);
+    }
+
+    /* choose thresholding */
+    for (int t = 0; t <  maxIntensity; t++){
+        // calculate count1 for the current t
+        count1 += histogram[t];
+
+        if(count1 == 0)
+            continue;
+
+        // calculate count2 for the current t
+        count2 = nbPixels - count1;
+
+        sumCurrent += (t*histogram[t]);
+
+        // calculate mean value for the first class
+        float mean1 = (float)sumCurrent/(float)count1;
+        // calculate mean value for the second class
+        float mean2 = ((float)sum - (float)sumCurrent)/(float)count2;
+
+        // calculate the between-class varience
+        float variance = (float)count1 * (float)count2 * (mean2 - mean1) * (mean2 - mean1);
+
+        // check if new maximum variance found
+        if(variance > maxVariance){
+            maxVariance = variance; // update maximum variance
+            thresholding = t; // choose the thresholding with the maximum variance
+        }
+    }
+
+    /* segmentation */
+    qDebug() << "thresholding for Otsu algorithm:" << thresholding; // result: 88
+    // travesing all pixels of imageIn
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb colorIn = imageIn.pixel(x, y); // get pixel value at (x,y)
+            int gray = qGray(colorIn); // convert color value at (x,y) to gray value
+
+            // check threshold
+            if(gray >= thresholding)
+                gray = 255;
+            else
+                gray = 0;
+
+            imageOut.setPixel(x, y, qRgb(gray, gray, gray)); // set pixel (x,y) with color (colorOut) for imageOut
+        }
+    }
+
+    /* post-segmentation */
+    int size = 3;
+    int kernel[size][size] = {{0, 1, 0},
+                              {1, 1, 1},
+                              {0, 1, 0}}; // cross shape
+    int margin = size/2;
+    int cGray;
+    QImage imageOut2(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+    imageOut2.fill(Qt::white);
+
+    for(int x = margin; x < imageIn.width()-margin; x++){
+        for(int y = margin; y < imageIn.height()-margin; y++){
+            cGray = qGray(imageOut.pixel(x, y));
+            if(cGray == 0){
+                for(int i = -margin; i <= margin; i++){
+                    for(int j = -margin; j <= margin; j++){
+                        if(kernel[i+margin][j+margin]){
+                            imageOut2.setPixel(x+i, y+j, qRgb(0, 0, 0));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* display imageIn, imageOut and imageOut2 */
+    displayImage(imageIn, QFileInfo(fileName).fileName());
+    displayImage(imageOut, QFileInfo(fileName).fileName()+"_auto_segmentation_otsu");
+    displayImage(imageOut2, QFileInfo(fileName).fileName()+"_post_segmentation_erosion_otsu");
+}
+
+void MainWindow::on_btn_imageBinaires_Open_Otsu_clicked(){
+    QString fileName = ui->ln_fileName->text();
+    QImage imageIn(fileName);
+    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+
+    // initialize variables
+    int sumCurrent = 0;
+    int count1 = 0; // the probability of the first class occurrence
+    int count2 = 0; // the probability of the second class occurrence
+    float maxVariance = 0;
+    int thresholding = 0;
+    int maxIntensity = 256;
+    int nbPixels = imageIn.width() * imageIn.height(); // number of pixels
+
+    // initialize histogram h(x)
+    int histogram[maxIntensity];
+    for(int i = 0; i < maxIntensity; i++)
+        histogram[i] = 0;
+
+    // calculate historgram h(x)
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y);
+            int gray = qGray(rgb);
+            histogram[gray]++;
+        }
+    }
+
+    // calculate (x * h(x)) for the overall histogram
+    int sum = 0;
+    for(int x = 0; x < maxIntensity; x++){
+        sum += (x * histogram[x]);
+    }
+
+    /* choose thresholding */
+    for (int t = 0; t <  maxIntensity; t++){
+        // calculate count1 for the current t
+        count1 += histogram[t];
+
+        if(count1 == 0)
+            continue;
+
+        // calculate count2 for the current t
+        count2 = nbPixels - count1;
+
+        sumCurrent += (t*histogram[t]);
+
+        // calculate mean value for the first class
+        float mean1 = (float)sumCurrent/(float)count1;
+        // calculate mean value for the second class
+        float mean2 = ((float)sum - (float)sumCurrent)/(float)count2;
+
+        // calculate the between-class varience
+        float variance = (float)count1 * (float)count2 * (mean2 - mean1) * (mean2 - mean1);
+
+        // check if new maximum variance found
+        if(variance > maxVariance){
+            maxVariance = variance; // update maximum variance
+            thresholding = t; // choose the thresholding with the maximum variance
+        }
+    }
+
+    /* segmentation */
+    qDebug() << "thresholding for Otsu algorithm:" << thresholding; // result: 88
+    // travesing all pixels of imageIn
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb colorIn = imageIn.pixel(x, y); // get pixel value at (x,y)
+            int gray = qGray(colorIn); // convert color value at (x,y) to gray value
+
+            // check threshold
+            if(gray >= thresholding)
+                gray = 255;
+            else
+                gray = 0;
+
+            imageOut.setPixel(x, y, qRgb(gray, gray, gray)); // set pixel (x,y) with color (colorOut) for imageOut
+        }
+    }
+
+    int size = 3;
+    int kernel[size][size] = {{0, 1, 0},
+                              {1, 1, 1},
+                              {0, 1, 0}}; // cross shape
+    int margin = size/2;
+    int cGray;
+    QImage imageOut2(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+    imageOut2.fill(Qt::white);
+
+    /* post-segmentation: erosion */
+    for(int x = margin; x < imageIn.width()-margin; x++){
+        for(int y = margin; y < imageIn.height()-margin; y++){
+            int ok = 1;
+            for(int i = -margin; i <= margin; i++){
+                for(int j = -margin; j <= margin; j++){
+                    cGray = qGray(imageOut.pixel(x+i, y+j));
+                    ok = ok && (kernel[i][j] == 0 || cGray == 0);
+                }
+            }
+            if(ok)
+                imageOut2.setPixel(x, y, qRgb(0, 0, 0));
+        }
+    }
+
+    QImage imageOut3(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+    imageOut3.fill(Qt::white);
+
+    /* post-segmentation: dilation */
+    for(int x = margin; x < imageIn.width()-margin; x++){
+        for(int y = margin; y < imageIn.height()-margin; y++){
+            cGray = qGray(imageOut2.pixel(x, y));
+            if(cGray == 0){
+                for(int i = -margin; i <= margin; i++){
+                    for(int j = -margin; j <= margin; j++){
+                        if(kernel[i+margin][j+margin]){
+                            imageOut3.setPixel(x+i, y+j, qRgb(0, 0, 0));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /* display imageIn, imageOut and imageOut2 */
+    displayImage(imageIn, QFileInfo(fileName).fileName());
+    displayImage(imageOut3, QFileInfo(fileName).fileName()+"_post_segmentation_open_otsu");
+}
+
+void MainWindow::on_btn_imageBinaires_Close_Otsu_clicked(){
+    QString fileName = ui->ln_fileName->text();
+    QImage imageIn(fileName);
+    QImage imageOut(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+
+    // initialize variables
+    int sumCurrent = 0;
+    int count1 = 0; // the probability of the first class occurrence
+    int count2 = 0; // the probability of the second class occurrence
+    float maxVariance = 0;
+    int thresholding = 0;
+    int maxIntensity = 256;
+    int nbPixels = imageIn.width() * imageIn.height(); // number of pixels
+
+    // initialize histogram h(x)
+    int histogram[maxIntensity];
+    for(int i = 0; i < maxIntensity; i++)
+        histogram[i] = 0;
+
+    // calculate historgram h(x)
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb rgb = imageIn.pixel(x, y);
+            int gray = qGray(rgb);
+            histogram[gray]++;
+        }
+    }
+
+    // calculate (x * h(x)) for the overall histogram
+    int sum = 0;
+    for(int x = 0; x < maxIntensity; x++){
+        sum += (x * histogram[x]);
+    }
+
+    /* choose thresholding */
+    for (int t = 0; t <  maxIntensity; t++){
+        // calculate count1 for the current t
+        count1 += histogram[t];
+
+        if(count1 == 0)
+            continue;
+
+        // calculate count2 for the current t
+        count2 = nbPixels - count1;
+
+        sumCurrent += (t*histogram[t]);
+
+        // calculate mean value for the first class
+        float mean1 = (float)sumCurrent/(float)count1;
+        // calculate mean value for the second class
+        float mean2 = ((float)sum - (float)sumCurrent)/(float)count2;
+
+        // calculate the between-class varience
+        float variance = (float)count1 * (float)count2 * (mean2 - mean1) * (mean2 - mean1);
+
+        // check if new maximum variance found
+        if(variance > maxVariance){
+            maxVariance = variance; // update maximum variance
+            thresholding = t; // choose the thresholding with the maximum variance
+        }
+    }
+
+    /* segmentation */
+    qDebug() << "thresholding for Otsu algorithm:" << thresholding; // result: 88
+    // travesing all pixels of imageIn
+    for(int x = 0; x < imageIn.width(); x++){
+        for(int y = 0; y < imageIn.height(); y++){
+            QRgb colorIn = imageIn.pixel(x, y); // get pixel value at (x,y)
+            int gray = qGray(colorIn); // convert color value at (x,y) to gray value
+
+            // check threshold
+            if(gray >= thresholding)
+                gray = 255;
+            else
+                gray = 0;
+
+            imageOut.setPixel(x, y, qRgb(gray, gray, gray)); // set pixel (x,y) with color (colorOut) for imageOut
+        }
+    }
+
+    int size = 3;
+    int kernel[size][size] = {{0, 1, 0},
+                              {1, 1, 1},
+                              {0, 1, 0}}; // cross shape
+    int margin = size/2;
+    int cGray;
+    QImage imageOut2(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+    imageOut2.fill(Qt::white);
+
+    /* post-segmentation: dilation */
+    for(int x = margin; x < imageIn.width()-margin; x++){
+        for(int y = margin; y < imageIn.height()-margin; y++){
+            cGray = qGray(imageOut.pixel(x, y));
+            if(cGray == 0){
+                for(int i = -margin; i <= margin; i++){
+                    for(int j = -margin; j <= margin; j++){
+                        if(kernel[i+margin][j+margin]){
+                            imageOut2.setPixel(x+i, y+j, qRgb(0, 0, 0));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    QImage imageOut3(imageIn.width(), imageIn.height(), QImage::Format_ARGB32);
+    imageOut3.fill(Qt::white);
+
+    /* post-segmentation: erosion */
+    for(int x = margin; x < imageIn.width()-margin; x++){
+        for(int y = margin; y < imageIn.height()-margin; y++){
+            int ok = 1;
+            for(int i = -margin; i <= margin; i++){
+                for(int j = -margin; j <= margin; j++){
+                    cGray = qGray(imageOut2.pixel(x+i, y+j));
+                    ok = ok && (kernel[i][j] == 0 || cGray == 0);
+                }
+            }
+            if(ok)
+                imageOut3.setPixel(x, y, qRgb(0, 0, 0));
+        }
+    }
+
+    /* display imageIn and imageOut3 */
+    displayImage(imageIn, QFileInfo(fileName).fileName());
+    displayImage(imageOut3, QFileInfo(fileName).fileName()+"_post_segmentation_close_otsu");
 }

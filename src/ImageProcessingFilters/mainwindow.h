@@ -47,18 +47,29 @@ private slots:
 
     void on_btn_sobelFilter_Gy_Gray_clicked();
 
-    void on_btn_autoSegmentation_Gray_clicked();
-
-    void on_btn_autoSegmentation_Otsu_Gray_clicked();
-
-
     void on_btn_prewittFilter_Gx_Gray_clicked();
 
     void on_btn_prewittFilter_Gy_Gray_clicked();
 
+    void on_btn_autoSegmentation_Gray_clicked();
+
+    void on_btn_autoSegmentation_Otsu_Gray_clicked();
+
     void on_btn_imageBinaires_Erosion_clicked();
 
     void on_btn_imageBinaires_Dilation_clicked();
+
+    void on_btn_imageBinaires_Open_Sequential_clicked();
+
+    void on_btn_imageBinaires_Close_Sequential_clicked();
+
+    void on_btn_imageBinaires_Erosion_Otsu_clicked();
+
+    void on_btn_imageBinaires_Dilation_Otsu_clicked();
+
+    void on_btn_imageBinaires_Open_Otsu_clicked();
+
+    void on_btn_imageBinaires_Close_Otsu_clicked();
 
 private:
     Ui::MainWindow *ui;
