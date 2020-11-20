@@ -412,6 +412,45 @@
      </layout>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="gBox_imageBinaires">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>420</y>
+      <width>481</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Image Binaires</string>
+    </property>
+    <widget class="QWidget" name="layoutWidget_14">
+     <property name="geometry">
+      <rect>
+       <x>130</x>
+       <y>20</y>
+       <width>311</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_imageBinaires">
+      <item>
+       <widget class="QPushButton" name="btn_imageBinaires_Erosion">
+        <property name="text">
+         <string>Erosion</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_imageBinaires_Dilation">
+        <property name="text">
+         <string>Dilation</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

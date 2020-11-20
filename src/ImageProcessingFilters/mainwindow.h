@@ -56,6 +56,10 @@ private slots:
 
     void on_btn_prewittFilter_Gy_Gray_clicked();
 
+    void on_btn_imageBinaires_Erosion_clicked();
+
+    void on_btn_imageBinaires_Dilation_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
