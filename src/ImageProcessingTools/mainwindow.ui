@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>495</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralWidget"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>495</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionOpen_File"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_File"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit_File"/>
+   </widget>
+   <widget class="QMenu" name="menuHistogram">
+    <property name="title">
+     <string>Histogram</string>
+    </property>
+    <addaction name="actionShow_Histogram_Gray_Image"/>
+    <addaction name="actionShow_Histogram_Color_Image"/>
+    <addaction name="actionHistogram_Slide"/>
+    <addaction name="actionHistogram_Stretch"/>
+    <addaction name="actionHistogram_Equalization"/>
+    <addaction name="actionLinear_Modification"/>
+   </widget>
+   <widget class="QMenu" name="menuAnalysis">
+    <property name="title">
+     <string>Analysis</string>
+    </property>
+    <addaction name="actionGradient_Filter"/>
+    <addaction name="actionRobert_Filter"/>
+    <addaction name="actionSobel_Filter"/>
+    <addaction name="actionPrewitt_Filter"/>
+   </widget>
+   <widget class="QMenu" name="menuEnhancement">
+    <property name="title">
+     <string>Enhancement</string>
+    </property>
+    <addaction name="actionMean_Filter_Gray_Image"/>
+    <addaction name="actionMean_Filter_Color_Image"/>
+    <addaction name="separator"/>
+    <addaction name="actionMedian_Filter_Gray_Image"/>
+    <addaction name="actionMedian_Filter_Color_Image"/>
+   </widget>
+   <widget class="QMenu" name="menuMorphology">
+    <property name="title">
+     <string>Morphology</string>
+    </property>
+    <addaction name="actionDilation"/>
+    <addaction name="actionErosion"/>
+    <addaction name="actionClose"/>
+    <addaction name="actionOpen"/>
+   </widget>
+   <widget class="QMenu" name="menuLogic">
+    <property name="title">
+     <string>Logic</string>
+    </property>
+    <addaction name="actionNOT"/>
+    <addaction name="actionAdd"/>
+    <addaction name="actionSubtract"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuHistogram"/>
+   <addaction name="menuAnalysis"/>
+   <addaction name="menuEnhancement"/>
+   <addaction name="menuMorphology"/>
+   <addaction name="menuLogic"/>
+  </widget>
+  <widget class="QToolBar" name="mainToolBar">
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionOpen_File">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave_File">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="actionExit_File">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionShow_Histogram_Gray_Image">
+   <property name="text">
+    <string>Show Histogram (Gray Image)</string>
+   </property>
+  </action>
+  <action name="actionShow_Histogram_Color_Image">
+   <property name="text">
+    <string>Show Histogram (Color Image)</string>
+   </property>
+  </action>
+  <action name="actionHistogram_Slide">
+   <property name="text">
+    <string>Histogram Slide</string>
+   </property>
+  </action>
+  <action name="actionHistogram_Stretch">
+   <property name="text">
+    <string>Histogram Stretch</string>
+   </property>
+  </action>
+  <action name="actionHistogram_Equalization">
+   <property name="text">
+    <string>Histogram Equalization</string>
+   </property>
+  </action>
+  <action name="actionLinear_Modification">
+   <property name="text">
+    <string>Linear Modification</string>
+   </property>
+  </action>
+  <action name="actionGradient_Filter">
+   <property name="text">
+    <string>Gradient Filter</string>
+   </property>
+  </action>
+  <action name="actionRobert_Filter">
+   <property name="text">
+    <string>Robert Filter</string>
+   </property>
+  </action>
+  <action name="actionSobel_Filter">
+   <property name="text">
+    <string>Sobel Filter</string>
+   </property>
+  </action>
+  <action name="actionPrewitt_Filter">
+   <property name="text">
+    <string>Prewitt Filter</string>
+   </property>
+  </action>
+  <action name="actionMean_Filter_Gray_Image">
+   <property name="text">
+    <string>Mean Filter (Gray Image)</string>
+   </property>
+  </action>
+  <action name="actionMean_Filter_Color_Image">
+   <property name="text">
+    <string>Mean Filter (Color Image)</string>
+   </property>
+  </action>
+  <action name="actionMedian_Filter_Gray_Image">
+   <property name="text">
+    <string>Median Filter (Gray Image)</string>
+   </property>
+  </action>
+  <action name="actionMedian_Filter_Color_Image">
+   <property name="text">
+    <string>Median Filter (Color Image)</string>
+   </property>
+  </action>
+  <action name="actionDilation">
+   <property name="text">
+    <string>Dilation</string>
+   </property>
+  </action>
+  <action name="actionErosion">
+   <property name="text">
+    <string>Erosion</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionNOT">
+   <property name="text">
+    <string>NOT</string>
+   </property>
+  </action>
+  <action name="actionAdd">
+   <property name="text">
+    <string>Add</string>
+   </property>
+  </action>
+  <action name="actionSubtract">
+   <property name="text">
+    <string>Subtract</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
