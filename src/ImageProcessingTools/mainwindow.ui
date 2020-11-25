@@ -39,19 +39,42 @@
     </property>
     <addaction name="actionShow_Histogram_Gray_Image"/>
     <addaction name="actionShow_Histogram_Color_Image"/>
-    <addaction name="actionHistogram_Slide"/>
-    <addaction name="actionHistogram_Stretch"/>
-    <addaction name="actionHistogram_Equalization"/>
-    <addaction name="actionLinear_Modification"/>
+    <addaction name="separator"/>
+    <addaction name="actionHistogram_Slide_Gray_Image"/>
+    <addaction name="actionHistogram_Slide_Color_Image"/>
+    <addaction name="separator"/>
+    <addaction name="actionHistogram_Stretch_Gray_Image"/>
+    <addaction name="actionHistogram_Stretch_Color_Image"/>
+    <addaction name="separator"/>
+    <addaction name="actionLinear_Modification_Gray_Image"/>
+    <addaction name="actionLinear_Modification_Color_Image"/>
+    <addaction name="separator"/>
+    <addaction name="actionHistogram_Equalization_Gray_Image"/>
+    <addaction name="actionHistogram_Equalization_Color_Image"/>
    </widget>
    <widget class="QMenu" name="menuAnalysis">
     <property name="title">
      <string>Analysis</string>
     </property>
-    <addaction name="actionGradient_Filter"/>
-    <addaction name="actionRobert_Filter"/>
-    <addaction name="actionSobel_Filter"/>
-    <addaction name="actionPrewitt_Filter"/>
+    <addaction name="actionGradient_Filter_Gray_Image_Gx"/>
+    <addaction name="actionGradient_Filter_Gray_Image_Gy"/>
+    <addaction name="actionGradient_Filter_Color_Image_Gx"/>
+    <addaction name="actionGradient_Filter_Color_Image_Gy"/>
+    <addaction name="separator"/>
+    <addaction name="actionRobert_Filter_Gray_Image_Gx"/>
+    <addaction name="actionRobert_Filter_Gray_Image_Gy"/>
+    <addaction name="actionRobert_Filter_Color_Image_Gx"/>
+    <addaction name="actionRobert_Filter_Color_Image_Gy"/>
+    <addaction name="separator"/>
+    <addaction name="actionSobel_Filter_Gray_Image_Gx"/>
+    <addaction name="actionSobel_Filter_Gray_Image_Gy"/>
+    <addaction name="actionSobel_Filter_Color_Image_Gx"/>
+    <addaction name="actionSobel_Filter_Color_Image_Gy"/>
+    <addaction name="separator"/>
+    <addaction name="actionPrewitt_Filter_Gray_Image_Gx"/>
+    <addaction name="actionPrewitt_Filter_Gray_Image_Gy"/>
+    <addaction name="actionPrewitt_Filter_Color_Image_Gx"/>
+    <addaction name="actionPrewitt_Filter_Color_Image_Gy"/>
    </widget>
    <widget class="QMenu" name="menuEnhancement">
     <property name="title">
@@ -67,25 +90,21 @@
     <property name="title">
      <string>Morphology</string>
     </property>
-    <addaction name="actionDilation"/>
-    <addaction name="actionErosion"/>
-    <addaction name="actionClose"/>
-    <addaction name="actionOpen"/>
-   </widget>
-   <widget class="QMenu" name="menuLogic">
-    <property name="title">
-     <string>Logic</string>
-    </property>
-    <addaction name="actionNOT"/>
-    <addaction name="actionAdd"/>
-    <addaction name="actionSubtract"/>
+    <addaction name="actionDilation_Sequential_Algorithm"/>
+    <addaction name="actionErosion_Sequential_Algorithm"/>
+    <addaction name="actionClose_Sequential_Algorithm"/>
+    <addaction name="actionOpen_Sequential_Algorithm"/>
+    <addaction name="separator"/>
+    <addaction name="actionDilation_Otsu_Algorithm"/>
+    <addaction name="actionErosion_Otsu_Algorithm"/>
+    <addaction name="actionClose_Otsu_Algorithm"/>
+    <addaction name="actionOpen_Otsu_Algorithm"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuHistogram"/>
    <addaction name="menuAnalysis"/>
    <addaction name="menuEnhancement"/>
    <addaction name="menuMorphology"/>
-   <addaction name="menuLogic"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -121,44 +140,44 @@
     <string>Show Histogram (Color Image)</string>
    </property>
   </action>
-  <action name="actionHistogram_Slide">
+  <action name="actionHistogram_Slide_Gray_Image">
    <property name="text">
-    <string>Histogram Slide</string>
+    <string>Histogram Slide (Gray Image)</string>
    </property>
   </action>
-  <action name="actionHistogram_Stretch">
+  <action name="actionHistogram_Stretch_Gray_Image">
    <property name="text">
-    <string>Histogram Stretch</string>
+    <string>Histogram Stretch (Gray Image)</string>
    </property>
   </action>
-  <action name="actionHistogram_Equalization">
+  <action name="actionHistogram_Equalization_Gray_Image">
    <property name="text">
-    <string>Histogram Equalization</string>
+    <string>Histogram Equalization (Gray Image)</string>
    </property>
   </action>
-  <action name="actionLinear_Modification">
+  <action name="actionLinear_Modification_Gray_Image">
    <property name="text">
-    <string>Linear Modification</string>
+    <string>Linear Modification (Gray Image)</string>
    </property>
   </action>
-  <action name="actionGradient_Filter">
+  <action name="actionGradient_Filter_Gray_Image_Gx">
    <property name="text">
-    <string>Gradient Filter</string>
+    <string>Gradient Filter (Gray Image Gx)</string>
    </property>
   </action>
-  <action name="actionRobert_Filter">
+  <action name="actionRobert_Filter_Gray_Image_Gx">
    <property name="text">
-    <string>Robert Filter</string>
+    <string>Robert Filter (Gray Image Gx)</string>
    </property>
   </action>
-  <action name="actionSobel_Filter">
+  <action name="actionSobel_Filter_Gray_Image_Gx">
    <property name="text">
-    <string>Sobel Filter</string>
+    <string>Sobel Filter (Gray Image Gx)</string>
    </property>
   </action>
-  <action name="actionPrewitt_Filter">
+  <action name="actionPrewitt_Filter_Gray_Image_Gx">
    <property name="text">
-    <string>Prewitt Filter</string>
+    <string>Prewitt Filter (Gray Image Gx)</string>
    </property>
   </action>
   <action name="actionMean_Filter_Gray_Image">
@@ -181,39 +200,124 @@
     <string>Median Filter (Color Image)</string>
    </property>
   </action>
-  <action name="actionDilation">
+  <action name="actionDilation_Sequential_Algorithm">
    <property name="text">
-    <string>Dilation</string>
+    <string>Dilation (Sequential Algorithm)</string>
    </property>
   </action>
-  <action name="actionErosion">
+  <action name="actionErosion_Sequential_Algorithm">
    <property name="text">
-    <string>Erosion</string>
+    <string>Erosion (Sequential Algorithm)</string>
    </property>
   </action>
-  <action name="actionClose">
+  <action name="actionClose_Sequential_Algorithm">
    <property name="text">
-    <string>Close</string>
+    <string>Close (Sequential Algorithm)</string>
    </property>
   </action>
-  <action name="actionOpen">
+  <action name="actionOpen_Sequential_Algorithm">
    <property name="text">
-    <string>Open</string>
+    <string>Open (Sequential Algorithm)</string>
    </property>
   </action>
-  <action name="actionNOT">
+  <action name="actionLinear_Modification_Color_Image">
    <property name="text">
-    <string>NOT</string>
+    <string>Linear Modification (Color Image)</string>
    </property>
   </action>
-  <action name="actionAdd">
+  <action name="actionHistogram_Equalization_Color_Image">
    <property name="text">
-    <string>Add</string>
+    <string>Histogram Equalization (Color Image)</string>
    </property>
   </action>
-  <action name="actionSubtract">
+  <action name="actionHistogram_Stretch_Color_Image">
    <property name="text">
-    <string>Subtract</string>
+    <string>Histogram Stretch (Color Image)</string>
+   </property>
+  </action>
+  <action name="actionHistogram_Slide_Color_Image">
+   <property name="text">
+    <string>Histogram Slide (Color Image)</string>
+   </property>
+  </action>
+  <action name="actionGradient_Filter_Gray_Image_Gy">
+   <property name="text">
+    <string>Gradient Filter (Gray Image Gy)</string>
+   </property>
+  </action>
+  <action name="actionRobert_Filter_Gray_Image_Gy">
+   <property name="text">
+    <string>Robert Filter (Gray Image Gy)</string>
+   </property>
+  </action>
+  <action name="actionSobel_Filter_Gray_Image_Gy">
+   <property name="text">
+    <string>Sobel Filter (Gray Image Gy)</string>
+   </property>
+  </action>
+  <action name="actionPrewitt_Filter_Gray_Image_Gy">
+   <property name="text">
+    <string>Prewitt Filter (Gray Image Gy)</string>
+   </property>
+  </action>
+  <action name="actionGradient_Filter_Color_Image_Gx">
+   <property name="text">
+    <string>Gradient Filter (Color Image Gx)</string>
+   </property>
+  </action>
+  <action name="actionGradient_Filter_Color_Image_Gy">
+   <property name="text">
+    <string>Gradient Filter (Color Image Gy)</string>
+   </property>
+  </action>
+  <action name="actionRobert_Filter_Color_Image_Gx">
+   <property name="text">
+    <string>Robert Filter (Color Image Gx)</string>
+   </property>
+  </action>
+  <action name="actionRobert_Filter_Color_Image_Gy">
+   <property name="text">
+    <string>Robert Filter (Color Image Gy)</string>
+   </property>
+  </action>
+  <action name="actionSobel_Filter_Color_Image_Gx">
+   <property name="text">
+    <string>Sobel Filter (Color Image Gx)</string>
+   </property>
+  </action>
+  <action name="actionSobel_Filter_Color_Image_Gy">
+   <property name="text">
+    <string>Sobel Filter (Color Image Gy)</string>
+   </property>
+  </action>
+  <action name="actionPrewitt_Filter_Color_Image_Gx">
+   <property name="text">
+    <string>Prewitt Filter (Color Image Gx)</string>
+   </property>
+  </action>
+  <action name="actionPrewitt_Filter_Color_Image_Gy">
+   <property name="text">
+    <string>Prewitt Filter (Color Image Gy)</string>
+   </property>
+  </action>
+  <action name="actionDilation_Otsu_Algorithm">
+   <property name="text">
+    <string>Dilation (Otsu Algorithm)</string>
+   </property>
+  </action>
+  <action name="actionErosion_Otsu_Algorithm">
+   <property name="text">
+    <string>Erosion (Otsu Algorithm)</string>
+   </property>
+  </action>
+  <action name="actionClose_Otsu_Algorithm">
+   <property name="text">
+    <string>Close (Otsu Algorithm)</string>
+   </property>
+  </action>
+  <action name="actionOpen_Otsu_Algorithm">
+   <property name="text">
+    <string>Open (Otsu Algorithm)</string>
    </property>
   </action>
  </widget>
